@@ -1,0 +1,12 @@
+.north_header{
+	background:-moz-linear-gradient(0% 100% 90deg, #0436BF, #075DF2) repeat #03d178;
+    border-color: #518DF5;
+    background-color:#227ADB;   
+    background-image:-o-linear-gradient(-90deg,rgba(112,179,228,1),rgba(66,154,219,0));
+    background-image:-moz-linear-gradient(-90deg,rgba(112,179,228,1),rgba(66,154,219,0));
+    background-image:-webkit-gradient(linear,50% 0%,50% 100%,from(rgba(112,179,228,1)),to(rgba(66,154,219,0)));
+    background-image:-webkit-linear-gradient(-90deg,rgba(112,179,228,1),rgba(66,154,219,0));
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    color:white;
+}
+.north_header a{color:white;}
