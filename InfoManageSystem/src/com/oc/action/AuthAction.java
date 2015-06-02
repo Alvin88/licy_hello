@@ -9,6 +9,7 @@ import com.oc.action.base.BaseAction;
 import com.oc.dto.Auth;
 import com.oc.dto.Json;
 import com.oc.service.AuthServiceI;
+import com.oc.service.BaseServiceI;
 import com.opensymphony.xwork2.ModelDriven;
 
 @Namespace("/")
@@ -70,5 +71,11 @@ public class AuthAction extends BaseAction implements ModelDriven<Auth> {
 			j.setMsg("添加失败！");
 		}
 		super.writeJson(j);
+	}
+
+	@Override
+	protected BaseServiceI getService() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

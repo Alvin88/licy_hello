@@ -11,11 +11,16 @@ import org.apache.struts2.convention.annotation.Namespace;
 import org.apache.struts2.convention.annotation.ParentPackage;
 
 import com.alibaba.fastjson.JSON;
+import com.oc.dto.Json;
+import com.oc.dto.User;
+import com.oc.service.BaseServiceI;
 import com.opensymphony.xwork2.ActionSupport;
 @ParentPackage("basePackage")
 @Namespace("/")
-public class BaseAction extends ActionSupport{
+public abstract class BaseAction<T> extends ActionSupport{
 	private static final Logger logger = Logger.getLogger(BaseAction.class);
+	
+	protected abstract BaseServiceI<T>  getService();
 	/**
 	 * 将对象转换成JSON字符串，并响应回前台
 	 * 
@@ -50,4 +55,40 @@ public class BaseAction extends ActionSupport{
 	public HttpServletResponse getResponse() {
 		return ServletActionContext.getResponse();
 	}
+	
+	public void add(T o) throws Exception {
+		Json j = new Json();
+		try {
+		 getService().saveOrUpdate(o);
+			j.setSuccess(true);
+			j.setMsg("添加成功");
+			j.setObj(o);
+		} catch (Exception e) {
+			j.setSuccess(false);
+			j.setMsg("添加失败");
+		}
+		writeJson(j);
+	}
+
+	public void delete(T o) {
+		getService().delete(o);;
+		Json j = new Json();
+		j.setSuccess(true);
+		j.setMsg("删除成功");
+		writeJson(j);
+	}
+
+	public String userEdit() {
+		return "userEdit";
+	}
+
+	public void edit(T o) {
+		 getService().saveOrUpdate(o);;
+		Json j = new Json();
+		j.setSuccess(true);
+		j.setMsg("编辑成功");
+		j.setObj(o);
+		writeJson(j);
+	}
+
 }

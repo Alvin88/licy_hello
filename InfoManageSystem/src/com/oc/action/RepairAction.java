@@ -4,6 +4,7 @@ import org.apache.struts2.convention.annotation.Action;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.oc.action.base.BaseAction;
+import com.oc.service.BaseServiceI;
 import com.oc.service.RepairServiceI;
 
 @Action("repairAction")
@@ -21,6 +22,12 @@ public class RepairAction extends BaseAction {
 
 	public void init(){
        repairService.repair();		
+	}
+
+	@Override
+	protected BaseServiceI getService() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

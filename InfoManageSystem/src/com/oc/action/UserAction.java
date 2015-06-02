@@ -11,6 +11,7 @@ import com.oc.action.base.BaseAction;
 import com.oc.dto.Json;
 import com.oc.dto.SessionInfo;
 import com.oc.dto.User;
+import com.oc.service.BaseServiceI;
 import com.oc.service.UserServiceI;
 import com.oc.utils.system.IpUtil;
 import com.oc.utils.system.ResourceUtil;
@@ -23,7 +24,7 @@ import com.opensymphony.xwork2.ModelDriven;
 		@Result(name = "userEdit", location = "/views/admin/userEdit.jsp"),
 		@Result(name = "doNotNeedSession_userInfo", location = "/views/user/userInfo.jsp")})
 @SuppressWarnings("all")
-public class UserAction extends BaseAction implements ModelDriven<User> {
+public class UserAction extends BaseAction<User> implements ModelDriven<User> {
 	private static final Logger logger = Logger.getLogger(UserAction.class);
 	User user = new User();
 
@@ -139,4 +140,10 @@ public class UserAction extends BaseAction implements ModelDriven<User> {
 		}
 		super.writeJson(j);
  	}
+
+	@Override
+	protected BaseServiceI<User> getService() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

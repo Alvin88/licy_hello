@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.oc.action.base.BaseAction;
 import com.oc.dto.Menu;
+import com.oc.service.BaseServiceI;
 import com.oc.service.MenuServiceI;
 import com.opensymphony.xwork2.ModelDriven;
 
@@ -31,5 +32,11 @@ public class MenuAction extends BaseAction implements ModelDriven<Menu> {
 	}
 	public Menu getModel() {
 		return menu;
+	}
+
+	@Override
+	protected BaseServiceI getService() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

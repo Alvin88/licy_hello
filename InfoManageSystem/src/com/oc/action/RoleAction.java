@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.oc.action.base.BaseAction;
 import com.oc.dto.Json;
 import com.oc.dto.Role;
+import com.oc.service.BaseServiceI;
 import com.oc.service.RoleServiceI;
 import com.opensymphony.xwork2.ModelDriven;
 
@@ -94,5 +95,11 @@ public class RoleAction extends BaseAction implements ModelDriven<Role> {
 		j.setSuccess(true);
 		j.setMsg("删除成功！");
 		super.writeJson(j);
+	}
+
+	@Override
+	protected BaseServiceI getService() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
