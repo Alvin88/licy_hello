@@ -1,5 +1,7 @@
 package com.oc.model;
 
+import java.util.Date;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -7,6 +9,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -16,39 +19,17 @@ import org.hibernate.annotations.Type;
 @Table(name = "tp_education")
 public class TpEducation {
 	private Integer id;
-	private String fromYear;//--时间-从年
-	private String fromMonth;// --时间-从月
-	private String toYear;// --时间-到年
-	private String toMonth;//--时间-到月
+	private Date eduFromDate;//开始日期
+	private Date eduToDate;//结束日期
+
 	private String schoolName;//--学校【Type】
 	private String subMajor;//--专业
-	private String moreMajor;// --更多专业
 	private int degree;//--学历
 	private String edu_detail;// --专业描述
-	private int isOversea;// --海外学习经历 1:是；0：否
-	private Tperson person;
-	public TpEducation() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
-	public TpEducation(Integer id, String fromYear, String fromMonth,
-			String toYear, String toMonth, String schoolName, String subMajor,
-			String moreMajor, int degree, String edu_detail, int isOversea,
-			Tperson person) {
-		super();
-		this.id = id;
-		this.fromYear = fromYear;
-		this.fromMonth = fromMonth;
-		this.toYear = toYear;
-		this.toMonth = toMonth;
-		this.schoolName = schoolName;
-		this.subMajor = subMajor;
-		this.moreMajor = moreMajor;
-		this.degree = degree;
-		this.edu_detail = edu_detail;
-		this.isOversea = isOversea;
-		this.person = person;
-	}
+
+	private String remark;//备注，或是用作他用
+	private Tresume resume;//所属简历
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	public Integer getId() {
@@ -57,33 +38,19 @@ public class TpEducation {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	@Column(name = "from_year", length = 4)
-	public String getFromYear() {
-		return fromYear;
+	@Column(name = "edu_from_date")
+	public Date getEduFromDate() {
+		return eduFromDate;
 	}
-	public void setFromYear(String fromYear) {
-		this.fromYear = fromYear;
+	public void setEduFromDate(Date eduFromDate) {
+		this.eduFromDate = eduFromDate;
 	}
-	@Column(name = "from_month", length = 2)
-	public String getFromMonth() {
-		return fromMonth;
+	@Column(name = "edu_to_date")
+	public Date getEduToDate() {
+		return eduToDate;
 	}
-	public void setFromMonth(String fromMonth) {
-		this.fromMonth = fromMonth;
-	}
-	@Column(name = "to_year", length = 4)
-	public String getToYear() {
-		return toYear;
-	}
-	public void setToYear(String toYear) {
-		this.toYear = toYear;
-	}
-	@Column(name = "to_month", length = 2)
-	public String getToMonth() {
-		return toMonth;
-	}
-	public void setToMonth(String toMonth) {
-		this.toMonth = toMonth;
+	public void setEduToDate(Date eduToDate) {
+		this.eduToDate = eduToDate;
 	}
 	@Column(name = "school_name", length = 100)
 	public String getSchoolName() {
@@ -99,13 +66,7 @@ public class TpEducation {
 	public void setSubMajor(String subMajor) {
 		this.subMajor = subMajor;
 	}
-	@Column(name = "more_major", length = 100)
-	public String getMoreMajor() {
-		return moreMajor;
-	}
-	public void setMoreMajor(String moreMajor) {
-		this.moreMajor = moreMajor;
-	}
+	
 	@Column(name = "degree", length = 3)
 	public int getDegree() {
 		return degree;
@@ -121,19 +82,25 @@ public class TpEducation {
 	public void setEdu_detail(String edu_detail) {
 		this.edu_detail = edu_detail;
 	}
-	@Column(name = "is_oversea", length = 1)
-	public int getIsOversea() {
-		return isOversea;
+	@Column(name = "remark", length = 255)
+	public String getRemark() {
+		return remark;
 	}
-	public void setIsOversea(int isOversea) {
-		this.isOversea = isOversea;
+	public void setRemark(String remark) {
+		this.remark = remark;
 	}
+
 	@ManyToOne(cascade = CascadeType.PERSIST, optional = false, fetch = FetchType.LAZY)
-	public Tperson getPerson() {
-		return person;
+	@JoinColumn(name = "resume_id")
+	public Tresume getResume() {
+		return resume;
 	}
-	public void setPerson(Tperson person) {
-		this.person = person;
+	public void setResume(Tresume resume) {
+		this.resume = resume;
 	}
+	
+	
+
+	
 
 }

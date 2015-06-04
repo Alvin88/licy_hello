@@ -13,11 +13,11 @@ import org.springframework.stereotype.Service;
 
 import com.oc.dao.BaseDaoI;
 import com.oc.dto.Auth;
-import com.oc.dto.TreeNode;
 import com.oc.model.Tauth;
 import com.oc.model.Troletauth;
 import com.oc.service.AuthServiceI;
 import com.oc.utils.system.AuthComparator;
+import com.oc.utils.system.TreeNode;
 
 @Service("authService")
 public class AuthServiceImpl implements AuthServiceI {

@@ -11,11 +11,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.struts2.ServletActionContext;
-
-import com.alibaba.druid.Constants;
-import com.oc.dto.SessionInfo;
 import com.oc.utils.system.ResourceUtil;
+import com.oc.utils.system.SessionInfo;
 
 public class SecurityFilter implements Filter {
 	@SuppressWarnings("unused")

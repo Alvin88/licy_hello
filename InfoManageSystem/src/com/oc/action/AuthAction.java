@@ -7,9 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.oc.action.base.BaseAction;
 import com.oc.dto.Auth;
-import com.oc.dto.Json;
 import com.oc.service.AuthServiceI;
+<<<<<<< HEAD
+import com.oc.utils.system.Json;
+=======
 import com.oc.service.BaseServiceI;
+>>>>>>> branch 'master' of https://github.com/Alvin88/licy_hello
 import com.opensymphony.xwork2.ModelDriven;
 
 @Namespace("/")

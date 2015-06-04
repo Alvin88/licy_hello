@@ -3,7 +3,7 @@ package com.oc.service;
 import java.util.List;
 
 import com.oc.dto.Auth;
-import com.oc.dto.TreeNode;
+import com.oc.utils.system.TreeNode;
 
 public interface AuthServiceI {
 

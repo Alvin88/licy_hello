@@ -1,4 +1,4 @@
-package com.oc.dto;
+package com.oc.utils.system;
 
 import java.util.ArrayList;
 import java.util.List;

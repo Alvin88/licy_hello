@@ -6,10 +6,10 @@ import org.apache.struts2.convention.annotation.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.oc.action.base.BaseAction;
-import com.oc.dto.Json;
 import com.oc.dto.Role;
 import com.oc.service.BaseServiceI;
 import com.oc.service.RoleServiceI;
+import com.oc.utils.system.Json;
 import com.opensymphony.xwork2.ModelDriven;
 
 @Namespace("/")

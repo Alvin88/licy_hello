@@ -1,5 +1,7 @@
 package com.oc.model;
 
+import java.util.Date;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,16 +24,18 @@ public class TpJobIntension {
    private String industryType;// --行业
    private String funType;//--职能
    private Integer salary;// --期望薪水
-   private Integer entryTime;//--到岗时间,以月为单位
+   private Date entryDate;//到岗时间
    private String introduction;//--自我评价
-   private Tperson person;//个人服务
+   private Tresume resume;//简历
+
 public TpJobIntension() {
 	super();
 	// TODO Auto-generated constructor stub
 }
+
 public TpJobIntension(Integer id, Integer jobTerm, String jobArea,
-		String industryType, String funType, Integer salary, Integer entryTime,
-		String introduction,Tperson person) {
+		String industryType, String funType, Integer salary, Date entryDate,
+		String introduction, Tresume resume) {
 	super();
 	this.id = id;
 	this.jobTerm = jobTerm;
@@ -39,10 +43,13 @@ public TpJobIntension(Integer id, Integer jobTerm, String jobArea,
 	this.industryType = industryType;
 	this.funType = funType;
 	this.salary = salary;
-	this.entryTime = entryTime;
+	this.entryDate = entryDate;
 	this.introduction = introduction;
-	this.person = person;
+	this.resume = resume;
 }
+
+
+
 @Id
 @GeneratedValue(strategy = GenerationType.AUTO)
 public Integer getId() {
@@ -86,12 +93,12 @@ public Integer getSalary() {
 public void setSalary(Integer salary) {
 	this.salary = salary;
 }
-@Column(name = "entry_time", length = 3)
-public Integer getEntryTime() {
-	return entryTime;
+@Column(name = "entry_date")
+public Date getEntryDate() {
+	return entryDate;
 }
-public void setEntryTime(Integer entryTime) {
-	this.entryTime = entryTime;
+public void setEntryDate(Date entryDate) {
+	this.entryDate = entryDate;
 }
 @Type(type="text")
 @Column(name = "introduction")
@@ -101,14 +108,14 @@ public String getIntroduction() {
 public void setIntroduction(String introduction) {
 	this.introduction = introduction;
 }
+
 @ManyToOne(cascade = CascadeType.PERSIST, optional = false, fetch = FetchType.LAZY)
-@JoinColumn(name = "person_id")
-public Tperson getPerson() {
-	return person;
+@JoinColumn(name = "resume_id")
+public Tresume getResume() {
+	return resume;
 }
-public void setPerson(Tperson person) {
-	this.person = person;
+public void setResume(Tresume resume) {
+	this.resume = resume;
 }
-   
    
 }
