@@ -11,9 +11,8 @@ import org.apache.struts2.convention.annotation.Namespace;
 import org.apache.struts2.convention.annotation.ParentPackage;
 
 import com.alibaba.fastjson.JSON;
-import com.oc.dto.Json;
-import com.oc.dto.User;
 import com.oc.service.BaseServiceI;
+import com.oc.utils.system.Json;
 import com.opensymphony.xwork2.ActionSupport;
 @ParentPackage("basePackage")
 @Namespace("/")

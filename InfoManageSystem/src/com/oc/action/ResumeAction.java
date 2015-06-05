@@ -14,6 +14,7 @@ import com.oc.dto.ResumeLanguage;
 import com.oc.dto.ResumeOtherInfo;
 import com.oc.dto.ResumeProject;
 import com.oc.dto.ResumeWork;
+import com.oc.service.BaseServiceI;
 import com.oc.service.ResumeServiceI;
 import com.oc.utils.system.Json;
 @Namespace("/")
@@ -224,8 +225,11 @@ public class ResumeAction extends BaseAction {//去掉了modeldriver因为本act
 //		j.setMsg("删除成功");
 //		writeJson(j);
 	}
-=======
-public class ResumeAction {
->>>>>>> branch 'master' of https://github.com/Alvin88/licy_hello
+
+	@Override
+	protected BaseServiceI getService() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }
