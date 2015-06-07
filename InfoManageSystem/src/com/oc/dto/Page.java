@@ -8,7 +8,7 @@ public class Page {
 	private int rows;
 	private String sort;
 	private String order;
-	private Map<String,Object> params ;
+	private Map<String,String> params ;
 	public int getPage() {
 		return page;
 	}
@@ -33,10 +33,10 @@ public class Page {
 	public void setOrder(String order) {
 		this.order = order;
 	}
-	public Map<String, Object> getParams() {
+	public Map<String, String> getParams() {
 		return params;
 	}
-	public void setParams(Map<String, Object> params) {
+	public void setParams(Map<String, String> params) {
 		this.params = params;
 	}
 

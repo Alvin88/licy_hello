@@ -3,6 +3,9 @@
  */
 package com.oc.service.impl;
 
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +38,18 @@ public class CompanyServiceImpl extends BaseServiceImpl<TpCompany> implements
 	@Override
 	protected String getHql(Page page) {
 		// TODO Auto-generated method stub
-		String hql = " from  TpCompany ";
+		String hql = " from  TpCompany company where 1=1 ";
+		Map<String,String> params = page.getParams();
+		if(params!=null){
+		if(params.get("name")!=null){
+			params.put("name", "'%"+params.get("name")+"%'");
+			hql=hql+" and  company.name like :name ";
+		}
+			
+		if(params.get("mail")!=null)
+			params.put("mail", "'%"+params.get("mail")+"%'");
+			hql=hql+" and  company.mail like :mail ";
+		}
 		return hql;
 	}
 

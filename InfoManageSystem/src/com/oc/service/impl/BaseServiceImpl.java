@@ -47,8 +47,9 @@ public abstract class BaseServiceImpl<T> implements BaseServiceI<T> {
 	@Override
 	public DataGrid datagrid( Page page) {
 		DataGrid j = new DataGrid();
+		j.setTotal(this.count("select count(*) " + this.getHql(page), page.getParams()));
 		j.setRows(this.find(this.getHql(page), page.getParams(), page.getPage(), page.getRows()));
-		j.setTotal(this.count(this.getHql(page), page.getParams()));
+		
 		return j;
 	}
 
