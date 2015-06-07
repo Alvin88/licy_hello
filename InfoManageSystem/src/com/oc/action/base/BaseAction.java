@@ -12,7 +12,7 @@ import org.apache.struts2.convention.annotation.ParentPackage;
 
 import com.alibaba.fastjson.JSON;
 import com.oc.dto.Json;
-import com.oc.dto.User;
+import com.oc.dto.Page;
 import com.oc.service.BaseServiceI;
 import com.opensymphony.xwork2.ActionSupport;
 @ParentPackage("basePackage")
@@ -21,6 +21,10 @@ public abstract class BaseAction<T> extends ActionSupport{
 	private static final Logger logger = Logger.getLogger(BaseAction.class);
 	
 	protected abstract BaseServiceI<T>  getService();
+	
+	protected T o;
+	
+	private Page page;
 	/**
 	 * 将对象转换成JSON字符串，并响应回前台
 	 * 
@@ -56,10 +60,10 @@ public abstract class BaseAction<T> extends ActionSupport{
 		return ServletActionContext.getResponse();
 	}
 	
-	public void add(T o) throws Exception {
+	public void add() throws Exception {
 		Json j = new Json();
 		try {
-		 getService().saveOrUpdate(o);
+		 getService().saveOrUpdate(getModel());
 			j.setSuccess(true);
 			j.setMsg("添加成功");
 			j.setObj(o);
@@ -91,4 +95,8 @@ public abstract class BaseAction<T> extends ActionSupport{
 		writeJson(j);
 	}
 
+	protected abstract T getModel();
+	public void datagrid() {
+		this.writeJson(getService().datagrid((Page)getModel()));
+	}
 }

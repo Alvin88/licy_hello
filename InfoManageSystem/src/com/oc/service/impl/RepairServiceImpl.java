@@ -382,11 +382,18 @@ public class RepairServiceImpl implements RepairServiceI {
 		cdgl.setText("菜单管理");
 		menuDao.saveOrUpdate(cdgl);
 
-		Tmenu buggl = new Tmenu();
-		buggl.setId("buggl");
-		buggl.setTmenu(xtgl);
-		buggl.setUrl("/views/resume/resume.jsp");
-		buggl.setText("简历管理");
-		menuDao.saveOrUpdate(buggl);
+		Tmenu jlgl = new Tmenu();
+		jlgl.setId("jlgl");
+		jlgl.setTmenu(jlgl);
+		jlgl.setUrl("/views/resume/resume.jsp");
+		jlgl.setText("简历管理");
+		menuDao.saveOrUpdate(jlgl);
+		
+		Tmenu gsgl = new Tmenu();
+		gsgl.setId("gsgl");
+		gsgl.setTmenu(gsgl);
+		gsgl.setUrl("/views/company/company.jsp");
+		gsgl.setText("公司管理");
+		menuDao.saveOrUpdate(gsgl);
 	}
 }

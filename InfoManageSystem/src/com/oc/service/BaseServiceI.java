@@ -3,6 +3,9 @@ package com.oc.service;
 import java.util.List;
 import java.util.Map;
 
+import com.oc.dto.DataGrid;
+import com.oc.dto.Page;
+
 public interface  BaseServiceI<T> {
 	
 	/**
@@ -49,5 +52,6 @@ public interface  BaseServiceI<T> {
 	public Long count(String hql, Map param);
 
 	
+	public DataGrid datagrid(Page page);
 
 }

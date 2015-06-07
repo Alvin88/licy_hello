@@ -1,18 +1,16 @@
 package com.oc.model;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import com.oc.dto.Page;
 
 @Entity
 @Table(name = "tp_company")
-public class TpCompany {
+public class TpCompany extends Page {
 	private int Id;//11
 
 	/**

@@ -30,4 +30,10 @@ public class RepairAction extends BaseAction {
 		return null;
 	}
 
+	@Override
+	protected Object getModel() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
