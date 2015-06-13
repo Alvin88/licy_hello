@@ -101,6 +101,7 @@
             <tx:method name="delete*" propagation="REQUIRED" />
             <tx:method name="enable*" propagation="REQUIRED" />
             <tx:method name="disable*" propagation="REQUIRED" />
+             <tx:method name="remove*" propagation="REQUIRED" />
             <!-- <tx:method name="remove*" propagation="REQUIRED" />
             <tx:method name="put*" propagation="REQUIRED" />
             <tx:method name="use*" propagation="REQUIRED"/> -->
