@@ -19,7 +19,7 @@
 					selectOnCheck : false,
 					pageList : [ 10, 20, 30, 40 ],
 					iconCls : 'icon-save',
-					url : '${pageContext.request.contextPath}/userAction!datagrid.action',
+					url : '${pageContext.request.contextPath}/resumeAction!datagrid.action',
 					idField : 'id',
 					pagePosition : 'bottom',
 					pagination : true,
@@ -292,7 +292,7 @@
 </div>
 <div id="resume_jlgl_addDialog" class="easyui-window"
 	data-options="closed:true,modal:true,inline:true,title:'新增简历'"
-	style="width:90%;height:90%;" align="center">
+	style="width:90%;height:95%;" align="center">
 	
 </div>
 <div id="ft" style="padding:5px;">

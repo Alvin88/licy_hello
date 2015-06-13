@@ -11,13 +11,13 @@ import org.springframework.stereotype.Service;
 
 import com.oc.dao.BaseDaoI;
 import com.oc.dao.impl.BaseDaoImpl;
-import com.oc.dto.DataGrid;
 import com.oc.dto.Role;
 import com.oc.model.Tauth;
 import com.oc.model.Trole;
 import com.oc.model.Troletauth;
 import com.oc.model.Tusertrole;
 import com.oc.service.RoleServiceI;
+import com.oc.utils.system.DataGrid;
 
 @Service("roleService")
 public class RoleServiceImpl implements RoleServiceI {

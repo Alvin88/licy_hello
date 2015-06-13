@@ -1,5 +1,6 @@
 package com.oc.action;
 
+
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Namespace;
 import org.apache.struts2.convention.annotation.Result;
@@ -7,9 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.oc.action.base.BaseAction;
 import com.oc.dto.Auth;
-import com.oc.dto.Json;
 import com.oc.service.AuthServiceI;
 import com.oc.service.BaseServiceI;
+import com.oc.utils.system.Json;
+//github.com/Alvin88/licy_hello
 import com.opensymphony.xwork2.ModelDriven;
 
 @Namespace("/")

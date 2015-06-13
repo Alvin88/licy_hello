@@ -2,8 +2,8 @@ package com.oc.service;
 
 import java.util.List;
 
-import com.oc.dto.DataGrid;
 import com.oc.dto.Role;
+import com.oc.utils.system.DataGrid;
 
 public interface RoleServiceI {
 public DataGrid datagrid(Role role);

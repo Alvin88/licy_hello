@@ -3,9 +3,9 @@ package com.oc.interceptor;
 import org.apache.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
 
-import com.oc.dto.SessionInfo;
 import com.oc.utils.system.RequestUtil;
 import com.oc.utils.system.ResourceUtil;
+import com.oc.utils.system.SessionInfo;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.interceptor.MethodFilterInterceptor;

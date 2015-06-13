@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.oc.dao.BaseDaoI;
-import com.oc.dto.DataGrid;
 import com.oc.dto.User;
 import com.oc.model.Tauth;
 import com.oc.model.Trole;
@@ -26,7 +25,9 @@ import com.oc.model.Troletauth;
 import com.oc.model.Tuser;
 import com.oc.model.Tusertrole;
 import com.oc.service.UserServiceI;
+import com.oc.utils.system.DataGrid;
 import com.oc.utils.system.Encrypt;
+
 
 @Service("userService")
 @Transactional

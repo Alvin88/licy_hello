@@ -2,9 +2,9 @@ package com.oc.service;
 
 import java.io.Serializable;
 
-import com.oc.dto.DataGrid;
 import com.oc.dto.User;
 import com.oc.model.Tuser;
+import com.oc.utils.system.DataGrid;
 
 public interface UserServiceI {
 public Serializable save(Tuser t);
