@@ -3,8 +3,8 @@ package com.oc.service;
 import java.util.List;
 import java.util.Map;
 
-import com.oc.dto.DataGrid;
 import com.oc.dto.Page;
+import com.oc.utils.system.DataGrid;
 
 public interface  BaseServiceI<T> {
 	

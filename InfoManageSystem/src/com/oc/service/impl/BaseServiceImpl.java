@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.oc.dao.BaseDaoI;
-import com.oc.dto.DataGrid;
 import com.oc.dto.Page;
 import com.oc.service.BaseServiceI;
+import com.oc.utils.system.DataGrid;
 
 public abstract class BaseServiceImpl<T> implements BaseServiceI<T> {
 	

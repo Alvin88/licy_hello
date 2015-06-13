@@ -232,4 +232,10 @@ public class ResumeAction extends BaseAction {//去掉了modeldriver因为本act
 		return null;
 	}
 
+	@Override
+	protected Object getModel() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
