@@ -53,6 +53,11 @@ public abstract class BaseServiceImpl<T> implements BaseServiceI<T> {
 		return j;
 	}
 
-	
+	@Override
+	public void executeHql(String hql, Object[] params) {
+
+      getDao().executeHql(hql, params);
+		
+	}
 
 }

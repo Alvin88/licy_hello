@@ -25,6 +25,8 @@ public abstract class BaseAction<T> extends ActionSupport{
 	protected T o;
 	
 	private Page page;
+	
+	private Integer[] ids;
 	/**
 	 * 将对象转换成JSON字符串，并响应回前台
 	 * 
@@ -74,8 +76,9 @@ public abstract class BaseAction<T> extends ActionSupport{
 		writeJson(j);
 	}
 
-	public void delete(T o) {
-		getService().delete(o);;
+	public void delete() {
+		
+		getService().remove(ids);;
 		Json j = new Json();
 		j.setSuccess(true);
 		j.setMsg("删除成功");
@@ -86,8 +89,8 @@ public abstract class BaseAction<T> extends ActionSupport{
 		return "userEdit";
 	}
 
-	public void edit(T o) {
-		 getService().saveOrUpdate(o);;
+	public void edit() {
+		 getService().saveOrUpdate(getModel());;
 		Json j = new Json();
 		j.setSuccess(true);
 		j.setMsg("编辑成功");
@@ -99,4 +102,11 @@ public abstract class BaseAction<T> extends ActionSupport{
 	public void datagrid() {
 		this.writeJson(getService().datagrid((Page)getModel()));
 	}
+	public Integer[] getIds() {
+		return ids;
+	}
+	public void setIds(Integer[] ids) {
+		this.ids = ids;
+	}
+
 }

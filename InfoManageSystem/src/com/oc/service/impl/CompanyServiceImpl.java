@@ -42,16 +42,26 @@ public class CompanyServiceImpl extends BaseServiceImpl<TpCompany> implements
 		Map<String,String> params = page.getParams();
 		if(params!=null){
 		if(params.get("name")!=null){
-			params.put("name", "'%"+params.get("name")+"%'");
+			params.put("name", '%'+params.get("name")+'%');
 			hql=hql+" and  company.name like :name ";
 		}
 			
 		if(params.get("mail")!=null)
-			params.put("mail", "'%"+params.get("mail")+"%'");
+			params.put("mail", '%'+params.get("mail")+'%');
 			hql=hql+" and  company.mail like :mail ";
 		}
 		return hql;
 	}
+
+   @Override
+ 	public void remove(Object[] ids) {
+		// TODO Auto-generated method stub
+		getDao().executeHql("delete TpCompany t where t.id in  ?", ids);
+		
+	}
+
+
+	
 
 
 	

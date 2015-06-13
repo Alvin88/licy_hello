@@ -11,7 +11,7 @@ import com.oc.dto.Page;
 @Entity
 @Table(name = "tp_company")
 public class TpCompany extends Page {
-	private int Id;//11
+	private int id;//11
 
 	/**
 	 * 公司全名
@@ -33,6 +33,9 @@ public class TpCompany extends Page {
 	 */
 	private String phone;
 	
+	/**
+	 * 手机
+	 */
 	private String mobilePhone;
 	
 	/**
@@ -54,16 +57,22 @@ public class TpCompany extends Page {
 	 * 
 	 */
 	private String traceState;
+	
+	private int level ;
+	
+	private  int traceDateCount;
+	
+	
 
 	 @Id
 	 @GeneratedValue(strategy = GenerationType.AUTO)
-	public int getId() {
-		return Id;
-	}
-	
-	public void setId(int id) {
-		Id = id;
-	}
+		public int getId() {
+			return id;
+		}
+
+		public void setId(int id) {
+			this.id = id;
+		}
 
 	public String getName() {
 		return name;
@@ -135,6 +144,22 @@ public class TpCompany extends Page {
 
 	public void setTraceState(String traceState) {
 		this.traceState = traceState;
+	}
+
+	public int getLevel() {
+		return level;
+	}
+
+	public void setLevel(int level) {
+		this.level = level;
+	}
+
+	public int getTraceDateCount() {
+		return traceDateCount;
+	}
+
+	public void setTraceDateCount(int traceDateCount) {
+		this.traceDateCount = traceDateCount;
 	}
 	
 	

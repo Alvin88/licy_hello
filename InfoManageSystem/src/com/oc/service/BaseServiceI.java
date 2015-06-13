@@ -14,6 +14,21 @@ public interface  BaseServiceI<T> {
 	 * @param o
 	 */
 	public void delete(T o);
+	
+	
+	/**
+	 * 删除批量删除
+	 * 
+	 * @param o
+	 */
+	public void remove(Object[] ids);
+
+	/**
+	 * 执行Hql
+	 * 
+	 * @param o
+	 */
+	public void executeHql(String hql,Object[] params);
 
 	/**
 	 * 更新一个对象
