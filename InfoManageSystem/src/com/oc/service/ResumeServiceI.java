@@ -11,7 +11,12 @@ import com.oc.utils.system.DataGrid;
 
 public interface ResumeServiceI {
 	public DataGrid datagrid(Resume resume);//获取简历
-	
+	public DataGrid getResumeWorkList(Integer resumeId);//获取简历的工作经历列表
+	public DataGrid getResumeEduList(Integer resumeId);//获取简历的教育经历列表
+	public DataGrid getResumeProjectList(Integer resumeId);//获取简历的项目经验列表
+	public DataGrid getResumeLanList(Integer resumeId);//获取简历的语言水平列表
+	public ResumeJobInten getResumeJobInten(Integer resumeId);//获取简历求职意向信息
+	public ResumeOtherInfo getResumeOtherInfo(Integer resumeId);//获取简历其他
 	
 	public Integer saveOrUpdateResume(Resume resume);//新增简历
 	public Integer saveOrUpdateResumeWork(ResumeWork resumeWork);//保存简历工作经历信息

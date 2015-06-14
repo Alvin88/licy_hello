@@ -4,6 +4,7 @@ package com.oc.action;
 import org.apache.log4j.Logger;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Namespace;
+import org.apache.struts2.convention.annotation.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.oc.action.base.BaseAction;
@@ -17,12 +18,73 @@ import com.oc.dto.ResumeWork;
 import com.oc.service.BaseServiceI;
 import com.oc.service.ResumeServiceI;
 import com.oc.utils.system.Json;
+import com.oc.utils.system.SysConstants;
 @Namespace("/")
 @Action(value = "resumeAction", results = {
+		//@Result(name = "roleAdd", location = "/admin/roleAdd.jsp"), 
+		//@Result(name = "roleEdit", location = "/admin/roleEdit.jsp") 
 		})
 @SuppressWarnings("all")
 public class ResumeAction extends BaseAction {//去掉了modeldriver因为本action需要用到多个实体
 	private static final Logger logger = Logger.getLogger(ResumeAction.class);
+	//简历id，从前台页面传递过来，用来查询简历其他信息
+	private String resumeIds;//批量删除简历，前台传递过来的ids
+	private String resumeWorkIds;//批量删除简历工作经历，前台传递过来的resumeWorkIds
+	private String resumeEduIds;//批量删除简历教育经历，前台传递过来的resumeEduIds
+	private String resumeLanIds;//批量删除简历语言水平，前台传递过来的resumeLanIds
+	private String resumeProjectIds;//批量删除简历项目经验，前台传递过来的resumeProjectIds
+	private String resumeJobIntenIds;//删除简历求职意向，为了以后扩展名称也以s结尾
+	private String resumeOtherInfoIds;//删除简历其他信息，为了以后扩展名称也以s结尾
+	
+	public String getResumeWorkIds() {
+		return resumeWorkIds;
+	}
+	public void setResumeWorkIds(String resumeWorkIds) {
+		this.resumeWorkIds = resumeWorkIds;
+	}
+	public String getResumeEduIds() {
+		return resumeEduIds;
+	}
+	public void setResumeEduIds(String resumeEduIds) {
+		this.resumeEduIds = resumeEduIds;
+	}
+	public String getResumeLanIds() {
+		return resumeLanIds;
+	}
+	public void setResumeLanIds(String resumeLanIds) {
+		this.resumeLanIds = resumeLanIds;
+	}
+	public String getResumeProjectIds() {
+		return resumeProjectIds;
+	}
+	public void setResumeProjectIds(String resumeProjectIds) {
+		this.resumeProjectIds = resumeProjectIds;
+	}
+	public String getResumeJobIntenIds() {
+		return resumeJobIntenIds;
+	}
+	public void setResumeJobIntenIds(String resumeJobIntenIds) {
+		this.resumeJobIntenIds = resumeJobIntenIds;
+	}
+	public String getResumeOtherInfoIds() {
+		return resumeOtherInfoIds;
+	}
+	public void setResumeOtherInfoIds(String resumeOtherInfoIds) {
+		this.resumeOtherInfoIds = resumeOtherInfoIds;
+	}
+	public String getResumeIds() {
+		return resumeIds;
+	}
+	public void setResumeIds(String resumeIds) {
+		this.resumeIds = resumeIds;
+	}
+	private Integer resumeId;//前台传递过来
+	public Integer getResumeId() {
+		return resumeId;
+	}
+	public void setResumeId(Integer resumeId) {
+		this.resumeId = resumeId;
+	}
 	Resume resume = new Resume();//简历基本信息实体
 	ResumeWork  resumeWork = new ResumeWork();//简历工作经历实体
 	ResumeProject resumeProject = new ResumeProject();//简历项目经验实体
@@ -101,9 +163,15 @@ public class ResumeAction extends BaseAction {//去掉了modeldriver因为本act
 		Json j = new Json();
 		try {
 			Integer resId = resumeService.saveOrUpdateResume(resume);
-			j.setSuccess(true);
-			j.setMsg("简历基本信息保存成功");
-			j.setObj(resId);
+			if(resId.equals(SysConstants.ERROR_REPLICATION)){
+				j.setSuccess(false);
+				j.setMsg("数据库中已经存在该登录名称的用户，不能再次添加");
+				j.setObj(null);
+			}else{
+				j.setSuccess(true);
+				j.setMsg("简历基本信息保存成功");
+				j.setObj(resId);
+			}
 		} catch (Exception e) {
 			j.setSuccess(false);
 			j.setMsg("简历基本信息保存失败");
@@ -115,31 +183,147 @@ public class ResumeAction extends BaseAction {//去掉了modeldriver因为本act
 	
 	//保存简历工作经历信息
 	public String saveOrUpdateResumeWork(){
+		Json j = new Json();
+		try {
+			Integer resWorkId = resumeService.saveOrUpdateResumeWork(resumeWork);
+			if(resWorkId.equals(SysConstants.ERROR_REPLICATION)){
+				j.setSuccess(false);
+				j.setMsg("该工作经历已经存在，不能再次添加");
+				j.setObj(null);
+			}else{
+				j.setSuccess(true);
+				j.setMsg("简历工作经历保存成功");
+				j.setObj(resWorkId);
+			}
+			
+		} catch (Exception e) {
+			j.setSuccess(false);
+			j.setMsg("简历工作经历保存失败");
+			e.printStackTrace();
+		}
+		writeJson(j);
 		return null;
 	}
 	
 	//保存简历教育经历信息
 	public String saveOrUpdateResumeEdu(){
+		Json j = new Json();
+		try {
+			Integer resEduId = resumeService.saveOrUpdateResumeEducation(resumeEdu);
+			if(resEduId.equals(SysConstants.ERROR_REPLICATION)){
+				j.setSuccess(false);
+				j.setMsg("该教育经历已经存在，不能再次添加");
+				j.setObj(null);
+			}else{
+				j.setSuccess(true);
+				j.setMsg("简历教育经历保存成功");
+				j.setObj(resEduId);
+			}
+		} catch (Exception e) {
+			j.setSuccess(false);
+			j.setMsg("简历教育经历保存失败");
+			e.printStackTrace();
+		}
+		writeJson(j);
 		return null;
 	}
 	
 	//保存简历语言水平信息
 	public String saveOrUpdateResumeLan(){
+		Json j = new Json();
+		try {
+			Integer resLanId = resumeService.saveOrUpdateResumeLanguage(resumeLan);
+			if(resLanId.equals(SysConstants.ERROR_REPLICATION)){
+				j.setSuccess(false);
+				j.setMsg("该语言水平已经存在，不能再次添加");
+				j.setObj(null);
+			}else{
+				j.setSuccess(true);
+				j.setMsg("简历语言水平保存成功");
+				j.setObj(resLanId);
+			}
+			
+		} catch (Exception e) {
+			j.setSuccess(false);
+			j.setMsg("简历语言水平保存失败");
+			e.printStackTrace();
+		}
+		writeJson(j);
 		return null;
 	}
 	
 	//保存简历项目经验信息
 	public String saveOrUpdateResumeProject(){
+		Json j = new Json();
+		try {
+			Integer resProjectId = resumeService.saveOrUpdateResumeProject(resumeProject);
+			if(resProjectId.equals(SysConstants.ERROR_REPLICATION)){
+				j.setSuccess(false);
+				j.setMsg("该项目经验已经存在，不能再次添加");
+				j.setObj(null);
+			}else{
+				j.setSuccess(true);
+				j.setMsg("简历项目经验保存成功");
+				j.setObj(resProjectId);
+			}
+			
+		} catch (Exception e) {
+			j.setSuccess(false);
+			j.setMsg("简历项目经验保存失败");
+			e.printStackTrace();
+		}
+		writeJson(j);
 		return null;
 	}
 	
 	//保存简历求职意向信息
 	public String saveOrUpdateResumeJobInten(){
+		Json j = new Json();
+		try {
+			Integer resJobIntenId = resumeService.saveOrUpdateResumeJobInten(resumeJobInten);
+			if(resJobIntenId.equals(SysConstants.ERROR_REPLICATION)){
+				j.setSuccess(false);
+				j.setMsg("该求职意向已经存在，不能再次添加");
+				j.setObj(null);
+			}else{
+				j.setSuccess(true);
+				j.setMsg("简历求职意向信息保存成功");
+				j.setObj(resJobIntenId);
+			}
+			
+		} catch (Exception e) {
+			j.setSuccess(false);
+			j.setMsg("简历求职意向信息保存失败");
+			e.printStackTrace();
+		}
+		writeJson(j);
 		return null;
 	}
 	
 	//保存简历其他信息
 	public String saveOrUpdateResumeOtherInfo(){
+		Json j = new Json();
+		try {
+			Integer resOtherId = resumeService.saveOrUpdateResumeOtherInfo(resumeOtherInfo);
+			if(resOtherId.equals(SysConstants.ERROR_REPLICATION)){
+				j.setSuccess(false);
+				j.setMsg("该信息已经存在，不能再次添加");
+				j.setObj(null);
+			}else if(resOtherId!=null){
+				j.setSuccess(true);
+				j.setMsg("简历其他信息保存成功");
+				j.setObj(resOtherId);
+			}else{
+				j.setSuccess(false);
+				j.setMsg("简历其他信息保存失败，联系管理员");
+				j.setObj(resOtherId);
+			}	
+		} catch (Exception e) {
+			j.setSuccess(false);
+			j.setMsg("简历其他信息保存失败");
+			e.printStackTrace();
+		}
+		writeJson(j);
 		return null;
 	}
 	
@@ -147,83 +331,139 @@ public class ResumeAction extends BaseAction {//去掉了modeldriver因为本act
 	 * 查询满足条件的简历信息并进行展示
 	 * */
 	public void datagrid(){
+		
 		super.writeJson(resumeService.datagrid(resume));
+	}
+	
+	/**
+	 * 根据简历id获取满足条件的工作经历列表
+	 * */
+	public void workdatagrid(){
+		if(resumeId!=null){
+			super.writeJson(resumeService.getResumeWorkList(resumeId));
+		}
+	}
+	
+	/**
+	 * 根据简历id获取满足条件的教育经历列表
+	 * */
+	public void edudatagrid(){
+		if(resumeId!=null){
+			super.writeJson(resumeService.getResumeEduList(resumeId));
+		}
+	}
+	
+	/**
+	 * 根据简历id获取满足条件的项目经历列表
+	 * */
+	public void projectdatagrid(){
+		if(resumeId!=null){
+			super.writeJson(resumeService.getResumeProjectList(resumeId));
+		}
+	}
+	
+	/**
+	 * 根据简历id获取满足条件的语言水平列表
+	 * */
+	public void landatagrid(){
+		if(resumeId!=null){
+			super.writeJson(resumeService.getResumeLanList(resumeId));
+		}
+	}
+	
+	/**
+	 * 根据简历id获取满足条件的求职意向
+	 * */
+	public void jobintendatagrid(){
+		if(resumeId!=null){
+			super.writeJson(resumeService.getResumeJobInten(resumeId));
+		}
+		
+	}
+	
+	/**
+	 * 根据简历id获取满足条件的求职意向
+	 * */
+	public void otherinfodatagrid(){
+		if(resumeId!=null){
+			super.writeJson(resumeService.getResumeOtherInfo(resumeId));
+		}
 	}
 	
 	/**
 	 * 删除所选择的简历信息
 	 * */
 	public void deleteResume() {
-//		resumeService.remove(user.getIds());
-//		Json j = new Json();
-//		j.setSuccess(true);
-//		j.setMsg("删除成功");
-//		writeJson(j);
+		resumeService.deleteResume(resumeIds);
+		Json j = new Json();
+		j.setSuccess(true);
+		j.setMsg("删除成功");
+		writeJson(j);
 	}
 	
 	/**
 	 * 删除所选择的简历信息
 	 * */
 	public void deleteResumeWork() {
-//		resumeService.remove(user.getIds());
-//		Json j = new Json();
-//		j.setSuccess(true);
-//		j.setMsg("删除成功");
-//		writeJson(j);
+		resumeService.deleteResumeWork(resumeWorkIds);
+		Json j = new Json();
+		j.setSuccess(true);
+		j.setMsg("删除成功");
+		writeJson(j);
 	}
 	
 	/**
 	 * 删除所选择的简历信息
 	 * */
 	public void deleteResumeEdu() {
-//		resumeService.remove(user.getIds());
-//		Json j = new Json();
-//		j.setSuccess(true);
-//		j.setMsg("删除成功");
-//		writeJson(j);
+		resumeService.deleteResumeEducation(resumeEduIds);
+		Json j = new Json();
+		j.setSuccess(true);
+		j.setMsg("删除成功");
+		writeJson(j);
 	}
 	/**
 	 * 删除所选择的简历信息
 	 * */
 	public void deleteResumeProject() {
-//		resumeService.remove(user.getIds());
-//		Json j = new Json();
-//		j.setSuccess(true);
-//		j.setMsg("删除成功");
-//		writeJson(j);
+		resumeService.deleteResumeProject(resumeProjectIds);
+		Json j = new Json();
+		j.setSuccess(true);
+		j.setMsg("删除成功");
+		writeJson(j);
 	}
 	
 	/**
 	 * 删除所选择的简历信息
 	 * */
 	public void deleteResumeLan() {
-//		resumeService.remove(user.getIds());
-//		Json j = new Json();
-//		j.setSuccess(true);
-//		j.setMsg("删除成功");
-//		writeJson(j);
+		resumeService.deleteResumeLanguage(resumeLanIds);
+		Json j = new Json();
+		j.setSuccess(true);
+		j.setMsg("删除成功");
+		writeJson(j);
 	}
 	
 	/**
 	 * 删除所选择的简历信息
 	 * */
 	public void deleteResumeJobInten() {
-//		resumeService.remove(user.getIds());
-//		Json j = new Json();
-//		j.setSuccess(true);
-//		j.setMsg("删除成功");
-//		writeJson(j);
+		resumeService.deleteResumeJobInten(resumeJobIntenIds);
+		Json j = new Json();
+		j.setSuccess(true);
+		j.setMsg("删除成功");
+		writeJson(j);
 	}
 	
 	/**
 	 * 删除所选择的简历信息
 	 * */
 	public void deleteResumeOtherInfo() {
-//		resumeService.remove(user.getIds());
-//		Json j = new Json();
-//		j.setSuccess(true);
-//		j.setMsg("删除成功");
-//		writeJson(j);
+		resumeService.deleteResumeOtherInfo(resumeOtherInfoIds);
+		Json j = new Json();
+		j.setSuccess(true);
+		j.setMsg("删除成功");
+		writeJson(j);
 	}
 
 	@Override

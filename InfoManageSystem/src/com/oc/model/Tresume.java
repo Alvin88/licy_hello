@@ -45,7 +45,7 @@ public class Tresume {
 	private String mobile;//--手机号码
 	private String companyTel;//--公司电话
 	private String homeTel;//--家庭电话
-	private String QQID;// --QQ号
+	private String qqId;// --QQ号
 	private String homePage;//--个人主页
 	private String address;//--详细地址
 	
@@ -57,6 +57,11 @@ public class Tresume {
 	private String createUserId;//创建者ID
 	private Date cdate;
 	private Date mdate;
+	
+	//简历状态相关系
+	private Integer auditStatus;//简历审核状态信息0表示未审核1表示审核通过，2表示审核不通过
+	private Integer isPublish;//简历发布信息，0表示发布，1表示未发布
+	
 	//外键相关的信息
 	private Set<TpWork> tpWorkSet;
 	private Set<TpLanguage> tpLanuageSet;
@@ -73,15 +78,24 @@ public class Tresume {
 	}
 
 
+	
+	
+
+
+	
+
+
+
 	public Tresume(Integer id, String code, String loginname, String loginpwd,
 			String email, String realname, Integer gender, String jiguan,
-			String minzu, Integer politicalStatus, Integer stature, Integer marrige,
-			Date birthday, Integer workYear, Integer cardType, String idNumber,
-			String location, String zipCode, String photo, Integer highestDegree,
-			String currSituation, String mobile, String companyTel,
-			String homeTel, String qQID, String homePage, String address,
-			String resumeKey, String createUserName, String createUserId,
-			Date cdate, Date mdate, Set<TpWork> tpWorkSet,
+			String minzu, Integer politicalStatus, Integer stature,
+			Integer marrige, Date birthday, Integer workYear, Integer cardType,
+			String idNumber, String location, String zipCode, String photo,
+			Integer highestDegree, String currSituation, String mobile,
+			String companyTel, String homeTel, String qqId, String homePage,
+			String address, String resumeKey, String createUserName,
+			String createUserId, Date cdate, Date mdate, Integer auditStatus,
+			Integer isPublish, Set<TpWork> tpWorkSet,
 			Set<TpLanguage> tpLanuageSet, Set<TpJobIntension> tpJobIntenSet,
 			Set<TpEducation> tpEduSet, Set<TpProject> tpProjectSet,
 			Set<TpOtherInfo> tpOtherInfoSet) {
@@ -110,7 +124,7 @@ public class Tresume {
 		this.mobile = mobile;
 		this.companyTel = companyTel;
 		this.homeTel = homeTel;
-		QQID = qQID;
+		this.qqId = qqId;
 		this.homePage = homePage;
 		this.address = address;
 		this.resumeKey = resumeKey;
@@ -118,6 +132,8 @@ public class Tresume {
 		this.createUserId = createUserId;
 		this.cdate = cdate;
 		this.mdate = mdate;
+		this.auditStatus = auditStatus;
+		this.isPublish = isPublish;
 		this.tpWorkSet = tpWorkSet;
 		this.tpLanuageSet = tpLanuageSet;
 		this.tpJobIntenSet = tpJobIntenSet;
@@ -125,6 +141,14 @@ public class Tresume {
 		this.tpProjectSet = tpProjectSet;
 		this.tpOtherInfoSet = tpOtherInfoSet;
 	}
+
+
+
+
+
+
+
+
 
 
 	@Id
@@ -301,12 +325,12 @@ public class Tresume {
 	public void setHomeTel(String homeTel) {
 		this.homeTel = homeTel;
 	}
-	@Column(name = "QQID", length = 30)
-	public String getQQID() {
-		return QQID;
+	@Column(name = "qq_id", length = 30)
+	public String getQqId() {
+		return qqId;
 	}
-	public void setQQID(String qQID) {
-		QQID = qQID;
+	public void setQqId(String qqId) {
+		this.qqId = qqId;
 	}
 	@Column(name = "home_page", length = 120)
 	public String getHomePage() {
@@ -358,6 +382,22 @@ public class Tresume {
 	public void setMdate(Date mdate) {
 		this.mdate = mdate;
 	}
+	@Column(name = "audit_status", length = 255)
+	public Integer getAuditStatus() {
+		return auditStatus;
+	}
+
+	public void setAuditStatus(Integer auditStatus) {
+		this.auditStatus = auditStatus;
+	}
+	@Column(name = "is_publish", length = 255)
+	public Integer getIsPublish() {
+		return isPublish;
+	}
+
+	public void setIsPublish(Integer isPublish) {
+		this.isPublish = isPublish;
+	}
 	
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "resume")
 	public Set<TpWork> getTpWorkSet() {
@@ -375,7 +415,7 @@ public class Tresume {
 		this.tpLanuageSet = tpLanuageSet;
 	}
 	
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "resume")
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "resume")
 	public Set<TpJobIntension> getTpJobIntenSet() {
 		return tpJobIntenSet;
 	}
@@ -399,7 +439,7 @@ public class Tresume {
 	public void setTpProjectSet(Set<TpProject> tpProjectSet) {
 		this.tpProjectSet = tpProjectSet;
 	}
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "resume")
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "resume")
 	public Set<TpOtherInfo> getTpOtherInfoSet() {
 		return tpOtherInfoSet;
 	}
@@ -407,6 +447,7 @@ public class Tresume {
 	public void setTpOtherInfoSet(Set<TpOtherInfo> tpOtherInfoSet) {
 		this.tpOtherInfoSet = tpOtherInfoSet;
 	}
+
 	
 	
 }

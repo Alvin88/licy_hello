@@ -39,7 +39,7 @@ public class Resume {
 	private String mobile;//--手机号码
 	private String companyTel;//--公司电话
 	private String homeTel;//--家庭电话
-	private String QQID;// --QQ号
+	private String qqId;// --QQ号
 	private String homePage;//--个人主页
 	private String address;//--详细地址
 	private String resumeKey;//--关键字
@@ -48,6 +48,11 @@ public class Resume {
 	private String createUserId;//创建者ID
 	private Date cdate;
 	private Date mdate;
+	
+	//简历状态相关系
+	private Integer auditStatus;//简历审核状态信息0表示未审核1表示审核通过，2表示审核不通过
+	private Integer isPublish;//简历发布信息，0表示发布，1表示未发布
+	
 	
 	//附带的其他简历信息
 	private List<ResumeWork>  workList;//工作经历
@@ -63,65 +68,21 @@ public class Resume {
 		// TODO Auto-generated constructor stub
 	}
 
-
-	public Resume(Integer page, Integer rows, String sort, String order,
-			Integer id, String code, String loginname, String loginpwd,
-			String email, String realname, Integer gender, String jiguan,
-			String minzu, Integer politicalStatus, Integer stature,
-			Integer marrige, Date birthday, Integer workYear, Integer cardType,
-			String idNumber, String location, String zipCode, String photo,
-			Integer highestDegree, String currSituation, String mobile,
-			String companyTel, String homeTel, String qQID, String homePage,
-			String address, String resumeKey, String createUserName,
-			String createUserId, Date cdate, Date mdate,
-			List<ResumeWork> workList, List<ResumeEducation> eduList,
-			List<ResumeProject> projectList, List<ResumeLanguage> lanList,
-			ResumeOtherInfo otherInfo, ResumeJobInten jobInten) {
-		super();
-		this.page = page;
-		this.rows = rows;
-		this.sort = sort;
-		this.order = order;
-		this.id = id;
-		this.code = code;
-		this.loginname = loginname;
-		this.loginpwd = loginpwd;
-		this.email = email;
-		this.realname = realname;
-		this.gender = gender;
-		this.jiguan = jiguan;
-		this.minzu = minzu;
-		this.politicalStatus = politicalStatus;
-		this.stature = stature;
-		this.marrige = marrige;
-		this.birthday = birthday;
-		this.workYear = workYear;
-		this.cardType = cardType;
-		this.idNumber = idNumber;
-		this.location = location;
-		this.zipCode = zipCode;
-		this.photo = photo;
-		this.highestDegree = highestDegree;
-		this.currSituation = currSituation;
-		this.mobile = mobile;
-		this.companyTel = companyTel;
-		this.homeTel = homeTel;
-		QQID = qQID;
-		this.homePage = homePage;
-		this.address = address;
-		this.resumeKey = resumeKey;
-		this.createUserName = createUserName;
-		this.createUserId = createUserId;
-		this.cdate = cdate;
-		this.mdate = mdate;
-		this.workList = workList;
-		this.eduList = eduList;
-		this.projectList = projectList;
-		this.lanList = lanList;
-		this.otherInfo = otherInfo;
-		this.jobInten = jobInten;
+	public Integer getAuditStatus() {
+		return auditStatus;
 	}
 
+	public void setAuditStatus(Integer auditStatus) {
+		this.auditStatus = auditStatus;
+	}
+
+	public Integer getIsPublish() {
+		return isPublish;
+	}
+
+	public void setIsPublish(Integer isPublish) {
+		this.isPublish = isPublish;
+	}
 
 	public Integer getPage() {
 		return page;
@@ -402,15 +363,16 @@ public class Resume {
 		this.homeTel = homeTel;
 	}
 
+	public String getQqId() {
+		return qqId;
+	}
 
-	public String getQQID() {
-		return QQID;
+	public void setQqId(String qqId) {
+		this.qqId = qqId;
 	}
 
 
-	public void setQQID(String qQID) {
-		QQID = qQID;
-	}
+
 
 
 	public String getHomePage() {

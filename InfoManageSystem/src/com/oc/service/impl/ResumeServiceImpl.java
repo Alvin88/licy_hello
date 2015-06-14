@@ -25,10 +25,12 @@ import com.oc.model.TpProject;
 import com.oc.model.TpWork;
 import com.oc.model.Tresume;
 import com.oc.service.ResumeServiceI;
+import com.oc.utils.system.CodeGenerator;
 import com.oc.utils.system.DataGrid;
 import com.oc.utils.system.Encrypt;
 import com.oc.utils.system.ResourceUtil;
 import com.oc.utils.system.SessionInfo;
+import com.oc.utils.system.SysConstants;
 
 @Service("resumeService")
 public class ResumeServiceImpl implements ResumeServiceI {
@@ -116,12 +118,8 @@ public class ResumeServiceImpl implements ResumeServiceI {
 			for (Tresume tre : tresumes) {
 				Resume u = new Resume();
 				BeanUtils.copyProperties(tre, u);//属性值复制，属性名称相同的会复制，因此要保证两个类需要复制的属性值相同
-				u.setWorkList(this.getResumeWorkList(tre.getId()));//添加工作经历
-				u.setEduList(this.getResumeEduList(tre.getId()));//添加教育经历
-				u.setProjectList(this.getResumeProjectList(tre.getId()));//添加项目经验
-				u.setLanList(this.getResumeLanList(tre.getId()));//添加语言水平
-				u.setJobInten(this.getResumeJobInten(tre.getId()));//添加工作意向
-				u.setOtherInfo(this.getResumeOtherInfo(tre.getId()));//添加其他信息
+				u.setJobInten(this.getResumeJobInten(tre.getId()));//获取求职意向
+				u.setOtherInfo(this.getResumeOtherInfo(tre.getId()));//获取其他信息
 				resumes.add(u);//添加
 			}
 		}
@@ -162,32 +160,68 @@ public class ResumeServiceImpl implements ResumeServiceI {
 	 * */
 	public Integer saveOrUpdateResume(Resume resume) {
 		if(resume.getId()!=null){//表示修改
-			
+			Tresume t = resumeDao.get(Tresume.class, resume.getId());
+			String createUserId = t.getCreateUserId();//创建人是不能变的
+			String createUserName = t.getCreateUserName();//创建人是不能变的
+			Date createDate = t.getCdate();//创建时间是不能变化的
+			Integer auditStatus = t.getAuditStatus();//审核状态不变
+			Integer isPublish = t.getIsPublish();//是否发布状态不变
+			BeanUtils.copyProperties(resume, t, new String[] { "loginpwd" });//这里会改变部分属性值，因此事先需要记录，然后再设置值
+			if(resume.getLoginpwd()!=null&& !(resume.getLoginpwd().equals(""))){
+				t.setLoginpwd(Encrypt.e(resume.getLoginpwd()));
+			}
+			t.setCreateUserId(createUserId);//保留原来的创建人id
+			t.setCreateUserName(createUserName);//保留原来创建人名称
+			t.setCdate(createDate);//保留原来创建时间
+			t.setAuditStatus(auditStatus);//保留原来审核状态
+			t.setIsPublish(isPublish);//保留原来发布状态
+			t.setMdate(new Date());
+			resumeDao.saveOrUpdate(t);//保存修改内容
+			return t.getId();
 		}else{//表示新增
-			
+			Tresume t = new Tresume();
+			String hql = "from Tresume t where t.loginname='"+resume.getLoginname()+"'";
+			List<Tresume> tmp = resumeDao.find(hql);
+			if(tmp!=null&&tmp.size()>0){
+				return SysConstants.ERROR_REPLICATION;//表示已经具有该用户，添加失败
+			}else{
+				BeanUtils.copyProperties(resume, t, new String[] { "loginpwd" });
+				//t.setId(UUID.randomUUID().toString());
+				t.setCode(CodeGenerator.getResumeNo());//自动创建简历编号
+				t.setLoginpwd(Encrypt.e(resume.getLoginpwd()));//密码加密
+				t.setCdate(new Date());//创建日期
+				SessionInfo sessionInfo = (SessionInfo) ServletActionContext.getRequest().getSession().getAttribute(ResourceUtil.getSessionInfoName());
+				t.setCreateUserId(sessionInfo.getUserId());//创建人ID
+				t.setCreateUserName(sessionInfo.getLoginName());//创建人
+				//初始化时审核状态为未审核，发布状态为未发布
+				t.setAuditStatus(SysConstants.NO_AUDIT);//未审核
+				t.setIsPublish(SysConstants.PUBLISH_NO);//未发布
+				resumeDao.save(t);//新增内容
+				return t.getId();
+			}
 		}
-		Tresume t = new Tresume();
-		BeanUtils.copyProperties(resume, t, new String[] { "loginpwd" });
-		//t.setId(UUID.randomUUID().toString());
-		t.setLoginpwd(Encrypt.e(resume.getLoginpwd()));//密码加密
-		t.setCdate(new Date());//创建日期
-		SessionInfo sessionInfo = (SessionInfo) ServletActionContext.getRequest().getSession().getAttribute(ResourceUtil.getSessionInfoName());
-		t.setCreateUserId(sessionInfo.getUserId());//创建人ID
-		t.setCreateUserName(sessionInfo.getLoginName());//创建人
-		resumeDao.save(t);
-		return t.getId();//返回实体ID
 	}
+	
+
 	
 	/**
 	 * 保存简历的工作经历信息
 	 * */
 	public Integer saveOrUpdateResumeWork(ResumeWork resumeWork){
-		if(resumeWork!=null){
-				TpWork  t = new TpWork();
-				BeanUtils.copyProperties(resumeWork, t);//复制属性值
-				t.setId(resumeWork.getWorkId());//增加这个是防止修改的时候把id给丢失了,防止重新新建数据
-				resumeWorkDao.save(t);//保存
-				return t.getId();
+		if(resumeWork!=null && resumeWork.getResumeId()!=null){
+				//使用公司名称辨别是否为同一段工作经历
+				String hql = "from TpWork t where t.company='"+resumeWork.getCompany()+"' "
+						+ " and t.resume.id="+resumeWork.getResumeId();
+				List<TpWork> tmp = resumeWorkDao.find(hql);
+				if(tmp!=null&&tmp.size()>0){
+					return SysConstants.ERROR_REPLICATION;//表示数据库中已经具有该工作经历，添加失败
+				}else{
+					TpWork  t = new TpWork();
+					BeanUtils.copyProperties(resumeWork, t);//复制属性值
+					t.setId(resumeWork.getWorkId());//增加这个是防止修改的时候把id给丢失了,防止重新新建数据
+					resumeWorkDao.save(t);//保存
+					return t.getId();
+				}
 		}
 		return null;
 	}
@@ -196,12 +230,20 @@ public class ResumeServiceImpl implements ResumeServiceI {
 	 * 保存简历的教育经历信息
 	 * */
 	public Integer saveOrUpdateResumeEducation(ResumeEducation resumeEducation){
-		if(resumeEducation!=null){
-				TpEducation  t = new TpEducation();
-				BeanUtils.copyProperties(resumeEducation, t);//复制属性值
-				t.setId(resumeEducation.getEduId());//增加这个是防止修改的时候把id给丢失了，防止重新新建数据
-				resumeEduDao.save(t);//保存
-				return t.getId();
+		if(resumeEducation!=null && resumeEducation.getResumeId()!=null){
+				//使用学历和学校辨别是否为同一段教育经历
+				String hql = "from TpEducation t where t.schoolName='"+resumeEducation.getSchoolName()+"' "
+						+ "and t.degree="+resumeEducation.getDegree()+" and t.resume.id="+resumeEducation.getResumeId();
+				List<TpEducation> tmp = resumeEduDao.find(hql);
+				if(tmp!=null&&tmp.size()>0){
+					return SysConstants.ERROR_REPLICATION;//表示数据库中已经具有该教育经历，添加失败
+				}else{
+					TpEducation  t = new TpEducation();
+					BeanUtils.copyProperties(resumeEducation, t);//复制属性值
+					t.setId(resumeEducation.getEduId());//增加这个是防止修改的时候把id给丢失了，防止重新新建数据
+					resumeEduDao.save(t);//保存
+					return t.getId();
+				}
 		}
 		return null;
 	}
@@ -210,12 +252,20 @@ public class ResumeServiceImpl implements ResumeServiceI {
 	 * 保存简历的语言水平信息
 	 * */
 	public Integer saveOrUpdateResumeLanguage(ResumeLanguage resumeLanguage){
-		if(resumeLanguage!=null){
-				TpLanguage  t = new TpLanguage();
-				BeanUtils.copyProperties(resumeLanguage, t);//复制属性值
-				t.setId(resumeLanguage.getLanId());//增加这个是防止修改的时候把id给丢失了，防止重新新建数据
-				resumeLanDao.save(t);//保存
-				return t.getId();
+		if(resumeLanguage!=null && resumeLanguage.getResumeId()!=null){
+				//使用语言类别辨别是否为同一语言水平信息
+				String hql = "from TpLanguage t where t.languageCategory="+resumeLanguage.getLanguageCategory()+
+						" and t.resume.id="+resumeLanguage.getResumeId();
+				List<TpLanguage> tmp = resumeLanDao.find(hql);
+				if(tmp!=null&&tmp.size()>0){
+					return SysConstants.ERROR_REPLICATION;//表示数据库中已经具有该语言水平，添加失败
+				}else{
+					TpLanguage  t = new TpLanguage();
+					BeanUtils.copyProperties(resumeLanguage, t);//复制属性值
+					t.setId(resumeLanguage.getLanId());//增加这个是防止修改的时候把id给丢失了，防止重新新建数据
+					resumeLanDao.save(t);//保存
+					return t.getId();
+				}
 		}
 		return null;
 	}
@@ -224,12 +274,20 @@ public class ResumeServiceImpl implements ResumeServiceI {
 	 * 保存简历的项目经验信息
 	 * */
 	public Integer saveOrUpdateResumeProject(ResumeProject resumeProject){
-		if(resumeProject!=null){
-				TpProject  t = new TpProject();
-				BeanUtils.copyProperties(resumeProject, t);//复制属性值
-				t.setId(resumeProject.getProjectId());//增加这个是防止修改的时候把id给丢失了，防止重新新建数据
-				resumeProjectDao.save(t);//保存
-				return t.getId();
+		if(resumeProject!=null && resumeProject.getResumeId()!=null){
+				//使用项目名称表示是否为同一个项目经历
+				String hql = "from TpProject t where t.projectTitle='"+resumeProject.getProjectTitle()+
+						"' and t.resume.id="+resumeProject.getResumeId();
+				List<TpProject> tmp = resumeProjectDao.find(hql);
+				if(tmp!=null&&tmp.size()>0){
+					return SysConstants.ERROR_REPLICATION;//表示数据库中已经具有该项目经验，添加失败
+				}else{
+					TpProject  t = new TpProject();
+					BeanUtils.copyProperties(resumeProject, t);//复制属性值
+					t.setId(resumeProject.getProjectId());//增加这个是防止修改的时候把id给丢失了，防止重新新建数据
+					resumeProjectDao.save(t);//保存
+					return t.getId();
+				}
 		}
 		return null;
 	}
@@ -238,11 +296,13 @@ public class ResumeServiceImpl implements ResumeServiceI {
 	 * 保存简历的工作意向信息
 	 * */
 	public Integer saveOrUpdateResumeJobInten(ResumeJobInten resumeJobInten){
-		if(resumeJobInten!=null){
+		if(resumeJobInten!=null && resumeJobInten.getResumeId()!=null){
 			TpJobIntension  t = new TpJobIntension();
 			BeanUtils.copyProperties(resumeJobInten, t);//复制属性值
 			t.setId(resumeJobInten.getJobIntenId());//增加这个是防止修改的时候把id给丢失了，防止重新新建数据
-			resumeJobIntenDao.save(t);//保存
+			Tresume resume = resumeDao.get(Tresume.class, resumeJobInten.getResumeId());
+			t.setResume(resume);
+			resumeJobIntenDao.saveOrUpdate(t);//.save(t);//新增或修改
 			return t.getId();
 		}
 		return null;
@@ -252,11 +312,13 @@ public class ResumeServiceImpl implements ResumeServiceI {
 	 * 保存简历的其他信息
 	 * */
 	public Integer saveOrUpdateResumeOtherInfo(ResumeOtherInfo otherInfo){
-		if(otherInfo!=null){
+		if(otherInfo!=null && otherInfo.getResumeId()!=null){
 			TpOtherInfo  t = new TpOtherInfo();
 			BeanUtils.copyProperties(otherInfo, t);//复制属性值
 			t.setId(otherInfo.getOtherId());//增加这个是防止修改的时候把id给丢失了，防止重新新建数据
-			resumeOtherDao.save(t);//保存
+			Tresume resume = resumeDao.get(Tresume.class, otherInfo.getResumeId());
+			t.setResume(resume);
+			resumeOtherDao.saveOrUpdate(t);//save(t);//新增或修改
 			return t.getId();
 		}
 		return null;
@@ -381,7 +443,8 @@ public class ResumeServiceImpl implements ResumeServiceI {
 	
 	
 	//----------------------获取简历相关的工作经历信息
-	private List<ResumeWork> getResumeWorkList(Integer resumeId){
+	public DataGrid getResumeWorkList(Integer resumeId){
+		DataGrid d = new DataGrid();
 		List<ResumeWork> works = new ArrayList<ResumeWork>();
 		String hql = "from TpWork t where 1=1 and t.resume.id="+resumeId;
 		List<TpWork> tpworks = resumeWorkDao.find(hql);
@@ -393,11 +456,14 @@ public class ResumeServiceImpl implements ResumeServiceI {
 				works.add(u);
 			}
 		}
-		return works; 
+		d.setRows(works);
+		d.setTotal((long)works.size());
+		return d;
 	}
 	
 	//----------------------获取简历相关的教育经历信息
-		private List<ResumeEducation> getResumeEduList(Integer resumeId){
+		public DataGrid getResumeEduList(Integer resumeId){
+			DataGrid d = new DataGrid();
 			List<ResumeEducation> edus = new ArrayList<ResumeEducation>();
 			String hql = "from TpEducation t where 1=1 and t.resume.id="+resumeId;
 			List<TpEducation> tpedus = resumeEduDao.find(hql);
@@ -409,12 +475,15 @@ public class ResumeServiceImpl implements ResumeServiceI {
 					edus.add(u);
 				}
 			}
-			return edus; 
+			d.setRows(edus);
+			d.setTotal((long)edus.size());
+			return d; 
 		}
 		
 		
 		//----------------------获取简历相关的项目经验信息
-		private List<ResumeProject> getResumeProjectList(Integer resumeId){
+		public  DataGrid getResumeProjectList(Integer resumeId){
+			DataGrid d = new DataGrid();
 			List<ResumeProject> projects = new ArrayList<ResumeProject>();
 			String hql = "from TpProject t where 1=1 and t.resume.id="+resumeId;
 			List<TpProject> tpprojects = resumeProjectDao.find(hql);
@@ -426,12 +495,15 @@ public class ResumeServiceImpl implements ResumeServiceI {
 					projects.add(u);
 				}
 			}
-			return projects; 
+			d.setRows(projects);
+			d.setTotal((long)projects.size());
+			return d; 
 		}
 		
 		
 		//----------------------获取简历相关的语言水平信息
-		private List<ResumeLanguage> getResumeLanList(Integer resumeId){
+		public DataGrid getResumeLanList(Integer resumeId){
+			DataGrid d = new DataGrid();
 			List<ResumeLanguage> lans = new ArrayList<ResumeLanguage>();
 			String hql = "from TpLanguage t where 1=1 and t.resume.id="+resumeId;
 			List<TpLanguage> tplans = resumeLanDao.find(hql);
@@ -443,18 +515,20 @@ public class ResumeServiceImpl implements ResumeServiceI {
 					lans.add(u);
 				}
 			}
-			return lans; 
+			d.setRows(lans);
+			d.setTotal((long)lans.size());
+			return d; 
 		}
 		
 		
 		//----------------------获取简历相关的工作意向信息
-		private ResumeJobInten getResumeJobInten(Integer resumeId){
+		public ResumeJobInten getResumeJobInten(Integer resumeId){
 			ResumeJobInten jobInten = new ResumeJobInten();
 			String hql = "from TpJobIntension t where 1=1 and t.resume.id="+resumeId;
 			List<TpJobIntension> tpjobs = resumeJobIntenDao.find(hql);
 			if (tpjobs != null && tpjobs.size() > 0) {
 				TpJobIntension tmp = tpjobs.get(0);//本系统对于一个简历的求职意向也只有一项
-				BeanUtils.copyProperties(jobInten,tmp);//属性值复制
+				BeanUtils.copyProperties(tmp,jobInten);//属性值复制
 				jobInten.setJobIntenId(tmp.getId());//由于id属性名称改变了，所以需要手动设置
 			}
 			return jobInten; 
@@ -463,13 +537,13 @@ public class ResumeServiceImpl implements ResumeServiceI {
 		
 		
 		//----------------------获取简历相关的其他信息
-		private ResumeOtherInfo getResumeOtherInfo(Integer resumeId){
+		public ResumeOtherInfo getResumeOtherInfo(Integer resumeId){
 			ResumeOtherInfo otherInfo = new ResumeOtherInfo();
 			String hql = "from TpOtherInfo t where 1=1 and t.resume.id="+resumeId;
 			List<TpOtherInfo> tpothers = resumeOtherDao.find(hql);
 			if (tpothers != null && tpothers.size() > 0) {
 				TpOtherInfo tmp = tpothers.get(0);//本系统对于一个简历的其他信息也只有一项
-				BeanUtils.copyProperties(otherInfo,tmp);//属性值复制
+				BeanUtils.copyProperties(tmp,otherInfo);//属性值复制
 				otherInfo.setOtherId(tmp.getId());//由于id属性名称改变了，所以需要手动设置
 			}
 			return otherInfo; 

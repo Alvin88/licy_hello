@@ -31,7 +31,7 @@
 						width : 100,
 						checkbox : true
 					}, {
-						field : 'name',
+						field : 'realname',
 						title : '姓名',
 						width : 100,
 						sortable : true
@@ -41,22 +41,47 @@
 						title : '性别',
 						width : 100,
 						formatter : function(value, rowData, rowIndex) {
-							return '******';
+							if(value===0){
+								return '男';
+							}else{
+								return '女';
+							}
 						}
 					}, {
-						field : 'age',
-						title : '年龄',
+						field : 'birthday',
+						title : '出生日期',
+						formatter : function(value, rowData, rowIndex) {
+							return value;
+						},
 						width : 100
 					}, {
 						field : 'workYear',
 						title : '工作经验',
-						width : 100
+						width : 100,
+						formatter : function(value, rowData, rowIndex) {
+							if(value!=null&&value!=""){
+								return value+"年";
+							}
+							return value;
+						},
 					},
 					{
 						title : '学历',
-						field : 'degree',
-						width : 150
-						//hidden : true
+						field : 'highestDegree',
+						width : 150,
+						formatter : function(value, rowData, rowIndex) {
+							switch(value){
+								case 0:return '博士';
+								case 1:return '硕士';
+								case 2:return '本科';
+								case 3:return '大专';
+								case 4:return '高中';
+								case 5:return '初中';
+								case 6:return '小学';
+								case 7:return '其他';
+								default:return '未知';
+							}
+						}
 					}, {
 						title : '专业',
 						field : 'subMajor',
@@ -93,7 +118,6 @@
 						}
 					} ]
 				});
-		$('#wizard').smartWizard();
 	});
 	function _search() {
 		var searchForm = $('#resume_jlgl_searchForm').form();
@@ -103,15 +127,23 @@
 		dg.datagrid('load', {});
 		$('#resume_jlgl_searchForm input').val('');
 	}
-	function moreSearchCondition(){
-		$('#resume_jlgl_searchForm input').hide();
-	}
-	function addResume() {
-		//$('#resume_jlgl_addForm').form('clear');
-		//$('#resume_jlgl_addDialog').dialog('open');
-		
-		$('#resume_jlgl_addDialog').window('refresh', '${pageContext.request.contextPath}/views/resume/resumeAdd.jsp');
-		$('#resume_jlgl_addDialog').window('open');
+
+	function addResume() {		
+		$('#resume_jlgl_addDialog').window({
+		    width:1000,
+		    height:500,
+		    title : '新增简历',
+			href : '${pageContext.request.contextPath}/views/resume/resumeAdd.jsp',
+		    inline:true,
+		    modal:true,
+			onClose : function() {
+				//关闭这里不能销毁
+			},
+			onLoad : function() {
+				//先设置resume表单的值为空
+				$('#form_resume_create input').val('');
+			}
+		});
 	}
 	function remove() {
 		var rows = dg.datagrid('getChecked');
@@ -127,9 +159,9 @@
 										ids.push(rows[i].id);
 									}
 									$.ajax({
-												url : '${pageContext.request.contextPath}/userAction!delete.action',
+												url : '${pageContext.request.contextPath}/resumeAction!deleteResume.action',
 												data : {
-													ids : ids.join(',')
+													resumeIds : ids.join(',')
 												},
 												dataType : 'json',
 												success : function(d) {
@@ -150,54 +182,114 @@
 	function editResume() {
 		var rows = dg.datagrid('getChecked');
 		if (rows.length == 1) {
-			//$('#resume_jlgl_editDialog').window('open');
 			$('#resume_jlgl_editDialog').window({
-			    width:600,
-			    height:300,
+			    width:1000,
+			    height:500,
 			    title : '编辑简历',
-				href : '${pageContext.request.contextPath}/views/resume/resumeEdit.jsp',
+				href : '${pageContext.request.contextPath}/views/resume/resumeEdit.jsp?editResumeId='+rows[0].id,
 			    inline:true,
 			    modal:true,
-			    buttons : [ {
-					text : '编辑',
-					handler : function() {
-						$('#admin_yhglEdit_Form').form('submit',{
-							 url:'${pageContext.request.contextPath}/userAction!edit.action',
-						            success:function(r){
-						            	obj=$.parseJSON(r);
-						                 if(obj.success){
-						                 d.dialog('close');
-						                 dg.datagrid('updateRow',{
-						                	index:dg.datagrid('getRowIndex',rows[0].id),
-						                	row:obj.obj
-						                }); 
-						            	 $.messager.show({
-						            		 title:'提示',
-						            		 msg:obj.msg
-						            	 });
-						                 }else{
-						                	 $.messager.alert('提示', obj.msg);
-						                 }
-								    }
-						});
-					}
-				} ],
 				onClose : function() {
 					//关闭这里不能销毁
 				},
 				onLoad : function() {
-				
-	                $('#resume_resumeEdit_Form').form('load',{
-	                	id:rows[0].id,
-	                	name:'lichunyi',
-	                	roleIds:'1,2,3,4',
-	                	createdatetime:rows[0].createdatetime,
-	                	modifydatetime:rows[0].modifydatetime
+					var resumeId = rows[0].id;//就是有值表示是修改，否则表示新增
+					//设置五个form表单的值
+					//首先设置form_resume_create表单
+					
+					$('#edit_form_resume_create').form('clear');
+	                $('#edit_form_resume_create').form('load',{
+	                	"resume.id":rows[0].id,
+	                	"resume.code":rows[0].code,
+	                	"resume.loginname":rows[0].loginname,
+	                	"resume.loginpwd":'',//密码需要置为空，只要填写了就是新密码
+	                	"resume.email":rows[0].email,
+	                	"resume.realname":rows[0].realname,
+	                	"resume.gender":rows[0].gender,
+	                	"resume.birthday":rows[0].birthday,
+	                	"resume.stature":rows[0].stature,
+	                	"resume.jiguan":rows[0].jiguan,
+	                	"resume.marrige":rows[0].marrige,
+	                	"resume.politicalStatus":rows[0].politicalStatus,
+	                	"resume.highestDegree":rows[0].highestDegree,
+	                	"resume.mobile":rows[0].mobile,
+	                	"resume.homeTel":rows[0].homeTel,
+	                	"resume.cardType":rows[0].cardType,
+	                	"resume.idNumber":rows[0].idNumber,
+	                	"resume.qqId":rows[0].qqId,
+	                	"resume.location":rows[0].location,
+	                	"resume.address":rows[0].address,
+	                	"resume.photo":rows[0].photo,
+	                	"resume.zipCode":rows[0].zipCode,
+	                	"resume.workYear":rows[0].workYear,
+	                	"resume.currSituation":rows[0].currSituation,
+	                	"resume.homePage":rows[0].homePage,
+	                	"resume.resumeKey":rows[0].resumeKey,
+	                	"resume.cdate":rows[0].cdate
 	                });
+	                
+					//简历求职意向表单form_resume_jobintension
+					$('#edit_form_resume_jobintension').form('clear');
+					console.dir(rows[0]);
+	                $('#edit_form_resume_jobintension').form('load',{
+	                	"resumeJobInten.jobIntenId":rows[0].jobInten.jobIntenId,
+	                	"resumeJobInten.resumeId":rows[0].jobInten.resumeId,
+	                	"resumeJobInten.jobTerm":rows[0].jobInten.jobTerm,
+	                	"resumeJobInten.jobArea":rows[0].jobInten.jobArea,
+	                	"resumeJobInten.industryType":rows[0].jobInten.industryType,
+	                	"resumeJobInten.funType":rows[0].jobInten.funType,
+	                	"resumeJobInten.salary":rows[0].jobInten.salary,
+	                	"resumeJobInten.entryDate":rows[0].jobInten.entryDate,
+	                	"resumeJobInten.introduction":rows[0].jobInten.introduction
+	                });
+	                
+	               //简历其他信息表单form_resume_otherinfo
+	               $('#edit_form_resume_otherinfo').form('clear');
+	                $('#edit_form_resume_otherinfo').form('load',{
+	                	"resumeOtherInfo.otherId":rows[0].otherInfo.otherId,
+	                	"resumeOtherInfo.resumeId":rows[0].otherInfo.resumeId,
+	                	"resumeOtherInfo.personalHobby":rows[0].otherInfo.personalHobby,
+	                	"resumeOtherInfo.specialSkill":rows[0].otherInfo.specialSkill,
+	                	"resumeOtherInfo.personHonor":rows[0].otherInfo.personHonor,
+	                	"resumeOtherInfo.partiGroup":rows[0].otherInfo.partiGroup,
+	                	"resumeOtherInfo.evaluation":rows[0].otherInfo.evaluation,
+	                	"resumeOtherInfo.otherSkill":rows[0].otherInfo.otherSkill
+	                });
+	                
+	               
+	               	 //简历工作经历列表赋值
+	               	 var workQueryParams = $('#editworklist').datagrid('options').queryParams;  
+	               	 workQueryParams.resumeId = resumeId;  
+         			 $('#editworklist').datagrid('options').queryParams=workQueryParams;      
+         			 $('#editworklist').datagrid('options').url='${pageContext.request.contextPath}/resumeAction!workdatagrid.action';
+         			 $("#editworklist").datagrid('reload'); 
+	               
+	               	
+	               	//简历项目经验列表取值
+	                 var projectQueryParams = $('#editprojectlist').datagrid('options').queryParams;  
+	                 projectQueryParams.resumeId = resumeId;  
+         			 $('#editprojectlist').datagrid('options').queryParams=projectQueryParams;      
+         			 $('#editprojectlist').datagrid('options').url='${pageContext.request.contextPath}/resumeAction!projectdatagrid.action';
+         			 $("#editprojectlist").datagrid('reload'); 
+	               	
+	               	//简历教育经历列表取值
+	                var eduQueryParams = $('#editedulist').datagrid('options').queryParams;  
+	                eduQueryParams.resumeId = resumeId;  
+         			 $('#editedulist').datagrid('options').queryParams=eduQueryParams;      
+         			 $('#editedulist').datagrid('options').url='${pageContext.request.contextPath}/resumeAction!edudatagrid.action';
+         			 $("#editedulist").datagrid('reload'); 
+         			 
+	               	//简历语言水平列表取值
+         			var lanQueryParams = $('#editlanlist').datagrid('options').queryParams;  
+         			lanQueryParams.resumeId = resumeId;  
+        			 $('#editlanlist').datagrid('options').queryParams=lanQueryParams;      
+        			 $('#editlanlist').datagrid('options').url='${pageContext.request.contextPath}/resumeAction!landatagrid.action';
+        			 $("#editlanlist").datagrid('reload'); 
+        			 console.dir("%%%%%%%%%%%%%%%%%%%%%%%%%%");
 				}
 			});
 		} else {
-			$.messager.alert('提示', '请勾选一条要编辑的数据');
+			$.messager.alert('提示', '请勾选一条要修改的数据');
 		}
 	}
 	
@@ -290,20 +382,7 @@
 		<table id="resume_jlgl_datagrid"></table>
 	</div>
 </div>
-<div id="resume_jlgl_addDialog" class="easyui-window"
-	data-options="closed:true,modal:true,inline:true,title:'新增简历'"
-	style="width:90%;height:95%;" align="center">
-	
-</div>
-<div id="ft" style="padding:5px;">
- <div style="width:70%;float:left;">
- 		<div class="ystep"></div>
- </div>
- <div style="width:28%;float:left;">
- 	<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-back'">上一步</a>
-    <a href="javascript:void(0)" class="easyui-linkbutton" onclick="goNext();" data-options="iconCls:'icon-back'">下一步</a>
-    <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-save'">Save</a>
- </div>
+<div id="resume_jlgl_addDialog"  style="width:90%;height:90%;" align="center">
 </div>
 <div id="resume_jlgl_editDialog" style="width:90%;height:90%;" align="center">
 </div>
