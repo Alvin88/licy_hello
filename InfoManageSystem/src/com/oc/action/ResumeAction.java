@@ -162,20 +162,23 @@ public class ResumeAction extends BaseAction {//去掉了modeldriver因为本act
 	public String saveOrUpdateResume(){
 		Json j = new Json();
 		try {
-			Integer resId = resumeService.saveOrUpdateResume(resume);
-			if(resId.equals(SysConstants.ERROR_REPLICATION)){
-				j.setSuccess(false);
-				j.setMsg("数据库中已经存在该登录名称的用户，不能再次添加");
-				j.setObj(null);
-			}else{
+			boolean result = resumeService.saveOrUpdateResume(resume);
+			if(result){
 				j.setSuccess(true);
 				j.setMsg("简历基本信息保存成功");
-				j.setObj(resId);
+				j.setObj(resume.getId());//新增后的实体id
+			}else{
+				if(resume!=null){
+					j.setSuccess(false);
+					j.setMsg("数据库中已经存在该登录名称的用户，不能再次添加");
+				}else{
+					j.setSuccess(false);
+					j.setMsg("简历基本信息保存失败");
+				}
 			}
 		} catch (Exception e) {
 			j.setSuccess(false);
 			j.setMsg("简历基本信息保存失败");
-			e.printStackTrace();
 		}
 		writeJson(j);
 		return null;
@@ -185,21 +188,23 @@ public class ResumeAction extends BaseAction {//去掉了modeldriver因为本act
 	public String saveOrUpdateResumeWork(){
 		Json j = new Json();
 		try {
-			Integer resWorkId = resumeService.saveOrUpdateResumeWork(resumeWork);
-			if(resWorkId.equals(SysConstants.ERROR_REPLICATION)){
-				j.setSuccess(false);
-				j.setMsg("该工作经历已经存在，不能再次添加");
-				j.setObj(null);
-			}else{
+			boolean result = resumeService.saveOrUpdateResumeWork(resumeWork);
+			if(result){
 				j.setSuccess(true);
 				j.setMsg("简历工作经历保存成功");
-				j.setObj(resWorkId);
+				j.setObj(resumeWork.getWorkId());
+			}else{
+				if(resumeWork!=null && resumeWork.getResumeId()!=null){
+					j.setSuccess(false);
+					j.setMsg("该工作经历已经存在，不能再次添加");
+				}else{
+					j.setSuccess(false);
+					j.setMsg("简历工作经历保存失败");
+				}
 			}
-			
 		} catch (Exception e) {
 			j.setSuccess(false);
 			j.setMsg("简历工作经历保存失败");
-			e.printStackTrace();
 		}
 		writeJson(j);
 		return null;
@@ -209,20 +214,24 @@ public class ResumeAction extends BaseAction {//去掉了modeldriver因为本act
 	public String saveOrUpdateResumeEdu(){
 		Json j = new Json();
 		try {
-			Integer resEduId = resumeService.saveOrUpdateResumeEducation(resumeEdu);
-			if(resEduId.equals(SysConstants.ERROR_REPLICATION)){
-				j.setSuccess(false);
-				j.setMsg("该教育经历已经存在，不能再次添加");
-				j.setObj(null);
-			}else{
+			boolean  result = resumeService.saveOrUpdateResumeEducation(resumeEdu);
+			if(result){
 				j.setSuccess(true);
 				j.setMsg("简历教育经历保存成功");
-				j.setObj(resEduId);
+				j.setObj(resumeEdu.getEduId());
+				
+			}else{
+				if(resumeEdu!=null  && resumeEdu.getResumeId()!=null){
+					j.setSuccess(false);
+					j.setMsg("该教育经历已经存在，不能再次添加");
+				}else{
+					j.setSuccess(false);
+					j.setMsg("简历教育经历保存失败");
+				}
 			}
 		} catch (Exception e) {
 			j.setSuccess(false);
 			j.setMsg("简历教育经历保存失败");
-			e.printStackTrace();
 		}
 		writeJson(j);
 		return null;
@@ -232,21 +241,23 @@ public class ResumeAction extends BaseAction {//去掉了modeldriver因为本act
 	public String saveOrUpdateResumeLan(){
 		Json j = new Json();
 		try {
-			Integer resLanId = resumeService.saveOrUpdateResumeLanguage(resumeLan);
-			if(resLanId.equals(SysConstants.ERROR_REPLICATION)){
-				j.setSuccess(false);
-				j.setMsg("该语言水平已经存在，不能再次添加");
-				j.setObj(null);
-			}else{
+			boolean result = resumeService.saveOrUpdateResumeLanguage(resumeLan);
+			if(result){
 				j.setSuccess(true);
 				j.setMsg("简历语言水平保存成功");
-				j.setObj(resLanId);
+				j.setObj(resumeLan.getLanId());
+			}else{
+				if(resumeLan!=null && resumeLan.getResumeId()!=null){
+					j.setSuccess(false);
+					j.setMsg("该语言水平已经存在，不能再次添加");
+				}else{
+					j.setSuccess(false);
+					j.setMsg("简历语言水平保存失败");
+				}
 			}
-			
 		} catch (Exception e) {
 			j.setSuccess(false);
 			j.setMsg("简历语言水平保存失败");
-			e.printStackTrace();
 		}
 		writeJson(j);
 		return null;
@@ -256,17 +267,21 @@ public class ResumeAction extends BaseAction {//去掉了modeldriver因为本act
 	public String saveOrUpdateResumeProject(){
 		Json j = new Json();
 		try {
-			Integer resProjectId = resumeService.saveOrUpdateResumeProject(resumeProject);
-			if(resProjectId.equals(SysConstants.ERROR_REPLICATION)){
-				j.setSuccess(false);
-				j.setMsg("该项目经验已经存在，不能再次添加");
-				j.setObj(null);
-			}else{
+			boolean result = resumeService.saveOrUpdateResumeProject(resumeProject);
+			if(result){
 				j.setSuccess(true);
 				j.setMsg("简历项目经验保存成功");
-				j.setObj(resProjectId);
+				j.setObj(resumeProject.getProjectId());
+				
+			}else{
+				if(resumeProject!=null && resumeProject.getResumeId()!=null){
+					j.setSuccess(false);
+					j.setMsg("该项目经验已经存在，不能再次添加");
+				}else{
+					j.setSuccess(false);
+					j.setMsg("简历项目经验保存失败");
+				}
 			}
-			
 		} catch (Exception e) {
 			j.setSuccess(false);
 			j.setMsg("简历项目经验保存失败");
@@ -280,21 +295,19 @@ public class ResumeAction extends BaseAction {//去掉了modeldriver因为本act
 	public String saveOrUpdateResumeJobInten(){
 		Json j = new Json();
 		try {
-			Integer resJobIntenId = resumeService.saveOrUpdateResumeJobInten(resumeJobInten);
-			if(resJobIntenId.equals(SysConstants.ERROR_REPLICATION)){
-				j.setSuccess(false);
-				j.setMsg("该求职意向已经存在，不能再次添加");
-				j.setObj(null);
-			}else{
+			boolean result = resumeService.saveOrUpdateResumeJobInten(resumeJobInten);
+			if(result){
 				j.setSuccess(true);
 				j.setMsg("简历求职意向信息保存成功");
-				j.setObj(resJobIntenId);
+				j.setObj(resumeJobInten.getJobIntenId());
+			}else{
+				j.setSuccess(false);
+				j.setMsg("该求职意向已经存在，不能再次添加");
 			}
 			
 		} catch (Exception e) {
 			j.setSuccess(false);
 			j.setMsg("简历求职意向信息保存失败");
-			e.printStackTrace();
 		}
 		writeJson(j);
 		return null;
@@ -304,19 +317,15 @@ public class ResumeAction extends BaseAction {//去掉了modeldriver因为本act
 	public String saveOrUpdateResumeOtherInfo(){
 		Json j = new Json();
 		try {
-			Integer resOtherId = resumeService.saveOrUpdateResumeOtherInfo(resumeOtherInfo);
-			if(resOtherId.equals(SysConstants.ERROR_REPLICATION)){
-				j.setSuccess(false);
-				j.setMsg("该信息已经存在，不能再次添加");
-				j.setObj(null);
-			}else if(resOtherId!=null){
+			boolean result = resumeService.saveOrUpdateResumeOtherInfo(resumeOtherInfo);
+			if(result){
 				j.setSuccess(true);
 				j.setMsg("简历其他信息保存成功");
-				j.setObj(resOtherId);
+				j.setObj(resumeOtherInfo.getOtherId());
+				
 			}else{
 				j.setSuccess(false);
-				j.setMsg("简历其他信息保存失败，联系管理员");
-				j.setObj(resOtherId);
+				j.setMsg("简历其他信息保存失败");
 			}	
 		} catch (Exception e) {
 			j.setSuccess(false);

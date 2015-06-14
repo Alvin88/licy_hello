@@ -18,13 +18,13 @@ public interface ResumeServiceI {
 	public ResumeJobInten getResumeJobInten(Integer resumeId);//获取简历求职意向信息
 	public ResumeOtherInfo getResumeOtherInfo(Integer resumeId);//获取简历其他
 	
-	public Integer saveOrUpdateResume(Resume resume);//新增简历
-	public Integer saveOrUpdateResumeWork(ResumeWork resumeWork);//保存简历工作经历信息
-	public Integer saveOrUpdateResumeEducation(ResumeEducation resumeEducation);//保存简历教育经历信息
-	public Integer saveOrUpdateResumeLanguage(ResumeLanguage resumeLanguage);//保存简历语言水平信息
-	public Integer saveOrUpdateResumeProject(ResumeProject resumeProject);//保存简历项目经验信息
-	public Integer saveOrUpdateResumeJobInten(ResumeJobInten resumeJobInten);//保存简历求职意向信息
-	public Integer saveOrUpdateResumeOtherInfo(ResumeOtherInfo otherInfo);//保存简历其他信息
+	public boolean saveOrUpdateResume(Resume resume);//新增简历
+	public boolean saveOrUpdateResumeWork(ResumeWork resumeWork);//保存简历工作经历信息
+	public boolean saveOrUpdateResumeEducation(ResumeEducation resumeEducation);//保存简历教育经历信息
+	public boolean saveOrUpdateResumeLanguage(ResumeLanguage resumeLanguage);//保存简历语言水平信息
+	public boolean saveOrUpdateResumeProject(ResumeProject resumeProject);//保存简历项目经验信息
+	public boolean saveOrUpdateResumeJobInten(ResumeJobInten resumeJobInten);//保存简历求职意向信息
+	public boolean saveOrUpdateResumeOtherInfo(ResumeOtherInfo otherInfo);//保存简历其他信息
 
 	
 	public void deleteResume(String ids);//删除简历
