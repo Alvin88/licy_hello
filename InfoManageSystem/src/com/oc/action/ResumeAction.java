@@ -302,7 +302,7 @@ public class ResumeAction extends BaseAction {//去掉了modeldriver因为本act
 				j.setObj(resumeJobInten.getJobIntenId());
 			}else{
 				j.setSuccess(false);
-				j.setMsg("该求职意向已经存在，不能再次添加");
+				j.setMsg("该求职意向信息保存失败");
 			}
 			
 		} catch (Exception e) {

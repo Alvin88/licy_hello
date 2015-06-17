@@ -11,11 +11,14 @@ var editlanlist = $("#editlanlist");
 
 $(document).ready(function(){
 	console.log(<%=editResumeId%>);
+	$("#edit_input_resume_id").val(<%=editResumeId%>);//设置id
 	$('#editworklist').datagrid({
 		onClickRow: function(index,row){
 			console.log("work");
 			//将datagrid中选中的行内容填充到表单
             $('#edit_form_resume_work').form('load',{
+            	"resumeWork.workId":row.workId,
+            	"resumeWork.resumeId":row.resumeId,
             	"resumeWork.workFromDate":row.workFromDate,
             	"resumeWork.workToDate":row.workToDate,
             	"resumeWork.industry":row.industry,
@@ -35,6 +38,8 @@ $(document).ready(function(){
 		onClickRow: function(index,row){
 			  console.log("project");
 			  $('#edit_form_resume_project').form('load',{
+				  	"resumeProject.projectId":row.projectId,
+	            	"resumeProject.resumeId":row.resumeId,
 	            	"resumeProject.projectTitle":row.projectTitle,
 	            	"resumeProject.projectFromDate":row.projectFromDate,
 	            	"resumeProject.projectToDate":row.projectToDate,
@@ -49,6 +54,8 @@ $(document).ready(function(){
 		onClickRow: function(index,row){
 			  console.log("edu");
 			  $('#edit_form_resume_edu').form('load',{
+				  	"resumeEdu.eduId":row.eduId,
+	            	"resumeEdu.resumeId":row.resumeId,
 	            	"resumeEdu.eduFromDate":row.eduFromDate,
 	            	"resumeEdu.eduToDate":row.eduToDate,
 	            	"resumeEdu.degree":row.degree,
@@ -63,6 +70,8 @@ $(document).ready(function(){
 		onClickRow: function(index,row){
 			  console.log("lan");
 			  $('#edit_form_resume_lan').form('load',{
+				    "resumeLan.eduId":row.lanId,
+	            	"resumeLan.resumeId":row.resumeId,
 	            	"resumeLan.languageCategory":row.languageCategory,
 	            	"resumeLan.languageLevel":row.languageLevel,
 	            	"resumeLan.master":row.master,
@@ -84,15 +93,13 @@ function createResume(){
 			var json = $.parseJSON(d);
 			if (json.success) {
 				//需要设置简历的id
+				$("#edit_input_resume_id").val(json.obj);//设置id
 				$.messager.show({
-		                title:'操作提示',
-		                msg:json.message,
-		                timeout:2000,
-		                showType:'slide'
-		         });
-				 
-				console.log(json.obj);
-				//ad.dialog('close');
+	                title:'操作提示',
+	                msg:json.message,
+	                timeout:2000,
+	                showType:'slide'
+	        	 });
 			}
 			$.messager.show({
 				msg : json.msg,
@@ -104,144 +111,181 @@ function createResume(){
 
 //创建简历ajax提交
 function saveOrUpdateResumeWork(){
-	$('#edit_form_resume_work').form('submit', {
-		url : '${pageContext.request.contextPath}/resumeAction!saveOrUpdateResumeWork.action',
-		success : function(d) {
-			var json = $.parseJSON(d);
-			if (json.success) {
-				editworklist.datagrid('load');
-				//ad.dialog('close');
+	var resumeId = $("#edit_input_resume_id").val();//获取创建的简历id
+	if(resumeId!=null&&resumeId!=''){
+		$("#editwork_resumeid").val(resumeId);//将获取到的简历id设置到edit_form_resume_work表单中
+		$('#edit_form_resume_work').form('submit', {
+			url : '${pageContext.request.contextPath}/resumeAction!saveOrUpdateResumeWork.action',
+			success : function(d) {
+				var json = $.parseJSON(d);
+				if (json.success) {
+					editworklist.datagrid('load');
+					//ad.dialog('close');
+					$.messager.show({
+		                title:'操作提示',
+		                msg:json.message,
+		                timeout:2000,
+		                showType:'slide'
+		         	});
+				}
 				$.messager.show({
-	                title:'操作提示',
-	                msg:json.message,
-	                timeout:2000,
-	                showType:'slide'
-	         	});
+					msg : json.msg,
+					title : '提示'
+				});
 			}
-			$.messager.show({
-				msg : json.msg,
-				title : '提示'
-			});
-		}
-	});
+		});
+	}else{
+		$.messager.alert('提示', '请先创建简历，在添加工作经历信息');
+	}
+	
 }
 
 //保存个人信息ajax提交
 function saveOrUpadateResumeProject(){
-	$('#edit_form_resume_project').form('submit', {
-		url : '${pageContext.request.contextPath}/resumeAction!saveOrUpdateResumeProject.action',
-		success : function(d) {
-			var json = $.parseJSON(d);
-			if (json.success) {
-				editprojectlist.datagrid('load');
+	var resumeId = $("#edit_input_resume_id").val();//获取创建的简历id
+	if(resumeId!=null&&resumeId!=''){
+		$("#editproject_resumeid").val(resumeId);//将获取到的简历id设置到edit_form_resume_project表单中
+		$('#edit_form_resume_project').form('submit', {
+			url : '${pageContext.request.contextPath}/resumeAction!saveOrUpdateResumeProject.action',
+			success : function(d) {
+				var json = $.parseJSON(d);
+				if (json.success) {
+					editprojectlist.datagrid('load');
+					$.messager.show({
+		                title:'操作提示',
+		                msg:json.message,
+		                timeout:2000,
+		                showType:'slide'
+		         	});
+					//ad.dialog('close');
+				}
 				$.messager.show({
-	                title:'操作提示',
-	                msg:json.message,
-	                timeout:2000,
-	                showType:'slide'
-	         	});
-				//ad.dialog('close');
+					msg : json.msg,
+					title : '提示'
+				});
 			}
-			$.messager.show({
-				msg : json.msg,
-				title : '提示'
-			});
-		}
-	});
+		});
+	}else{
+		$.messager.alert('提示', '请先创建简历，在添加项目经验信息');
+	}
 }
 
 //保存求职意向ajax提交
 function saveOrUpdateResumeLan(){
-	$('#edit_form_resume_lan').form('submit', {
-		url : '${pageContext.request.contextPath}/resumeAction!saveOrUpdateResumeLan.action',
-		success : function(d) {
-			var json = $.parseJSON(d);
-			if (json.success) {
-				editlanlist.datagrid('load');
-				//ad.dialog('close');
+	var resumeId = $("#edit_input_resume_id").val();//获取创建的简历id
+	if(resumeId!=null&&resumeId!=''){
+		$("#editlan_resumeid").val(resumeId);//将获取到的简历id设置到edit_form_resume_lan表单中
+		$('#edit_form_resume_lan').form('submit', {
+			url : '${pageContext.request.contextPath}/resumeAction!saveOrUpdateResumeLan.action',
+			success : function(d) {
+				var json = $.parseJSON(d);
+				if (json.success) {
+					editlanlist.datagrid('load');
+					//ad.dialog('close');
+					$.messager.show({
+		                title:'操作提示',
+		                msg:json.message,
+		                timeout:2000,
+		                showType:'slide'
+		         	});
+				}
 				$.messager.show({
-	                title:'操作提示',
-	                msg:json.message,
-	                timeout:2000,
-	                showType:'slide'
-	         	});
+					msg : json.msg,
+					title : '提示'
+				});
 			}
-			$.messager.show({
-				msg : json.msg,
-				title : '提示'
-			});
-		}
-	});
+		});
+	}else{
+		$.messager.alert('提示', '请先创建简历，在添加语言水平信息');
+	}
 }
 
 //保存工作经验ajax提交
 function saveOrUpdateResumeEdu(){
-	$('#edit_form_resume_edu').form('submit', {
-		url : '${pageContext.request.contextPath}/resumeAction!saveOrUpdateResumeEdu.action',
-		success : function(d) {
-			var json = $.parseJSON(d);
-			if (json.success) {
-				editedulist.datagrid('load');
-				//ad.dialog('close');
+	var resumeId = $("#edit_input_resume_id").val();//获取创建的简历id
+	if(resumeId!=null&&resumeId!=''){
+		$("#editedu_resumeid").val(resumeId);//将获取到的简历id设置到edit_form_resume_edu表单中
+		$('#edit_form_resume_edu').form('submit', {
+			url : '${pageContext.request.contextPath}/resumeAction!saveOrUpdateResumeEdu.action',
+			success : function(d) {
+				var json = $.parseJSON(d);
+				if (json.success) {
+					editedulist.datagrid('load');
+					//ad.dialog('close');
+					$.messager.show({
+		                title:'操作提示',
+		                msg:json.message,
+		                timeout:2000,
+		                showType:'slide'
+		         	});
+				}
 				$.messager.show({
-	                title:'操作提示',
-	                msg:json.message,
-	                timeout:2000,
-	                showType:'slide'
-	         	});
+					msg : json.msg,
+					title : '提示'
+				});
 			}
-			$.messager.show({
-				msg : json.msg,
-				title : '提示'
-			});
-		}
-	});
+		});
+	}else{
+		$.messager.alert('提示', '请先创建简历，在添加教育经历信息');
+	}
 }
 
 //保存教育经历ajax提交
 function saveOrUpdateResumeJobInten(){
-	$('#edit_form_resume_jobintension').form('submit', {
-		url : '${pageContext.request.contextPath}/resumeAction!saveOrUpdateResumeJobInten.action',
-		success : function(d) {
-			var json = $.parseJSON(d);
-			if (json.success) {
-				//ad.dialog('close');
+	var resumeId = $("#edit_input_resume_id").val();//获取创建的简历id
+	if(resumeId!=null&&resumeId!=''){
+		$("#editjobinten_resumeid").val(resumeId);//将获取到的简历id设置到edit_form_resume_jobintension表单中
+		$('#edit_form_resume_jobintension').form('submit', {
+			url : '${pageContext.request.contextPath}/resumeAction!saveOrUpdateResumeJobInten.action',
+			success : function(d) {
+				var json = $.parseJSON(d);
+				if (json.success) {
+					//ad.dialog('close');
+					$.messager.show({
+		                title:'操作提示',
+		                msg:json.message,
+		                timeout:2000,
+		                showType:'slide'
+		         	});
+				}
 				$.messager.show({
-	                title:'操作提示',
-	                msg:json.message,
-	                timeout:2000,
-	                showType:'slide'
-	         	});
+					msg : json.msg,
+					title : '提示'
+				});
 			}
-			$.messager.show({
-				msg : json.msg,
-				title : '提示'
-			});
-		}
-	});
+		});
+	}else{
+		$.messager.alert('提示', '请先创建简历，在添加求职意向信息');
+	}
 }
 
 //保存语言水平ajax提交
 function saveOrUpdateResumeOtherInfo(){
-	$('#edit_form_resume_otherinfo').form('submit', {
-		url : '${pageContext.request.contextPath}/resumeAction!saveOrUpdateResumeOtherInfo.action',
-		success : function(d) {
-			var json = $.parseJSON(d);
-			if (json.success) {
-				//ad.dialog('close');
+	var resumeId = $("#edit_input_resume_id").val();//获取创建的简历id
+	if(resumeId!=null&&resumeId!=''){
+		$("#editotherinfo_resumeid").val(resumeId);//将获取到的简历id设置到edit_form_resume_otherinfo表单中
+		$('#edit_form_resume_otherinfo').form('submit', {
+			url : '${pageContext.request.contextPath}/resumeAction!saveOrUpdateResumeOtherInfo.action',
+			success : function(d) {
+				var json = $.parseJSON(d);
+				if (json.success) {
+					//ad.dialog('close');
+					$.messager.show({
+		                title:'操作提示',
+		                msg:json.message,
+		                timeout:2000,
+		                showType:'slide'
+		         	});
+				}
 				$.messager.show({
-	                title:'操作提示',
-	                msg:json.message,
-	                timeout:2000,
-	                showType:'slide'
-	         	});
+					msg : json.msg,
+					title : '提示'
+				});
 			}
-			$.messager.show({
-				msg : json.msg,
-				title : '提示'
-			});
-		}
-	});
+		});
+	}else{
+		$.messager.alert('提示', '请先创建简历，在添加其他信息');
+	}
 }
 
 
@@ -467,8 +511,8 @@ function cleanFormFun(formId){
 						<td><input name="resume.loginname" class="easyui-textbox" style="width:160px;height:24px;" data-options="required:true" /></td>
 						<th>登录密码<span style="color:red">*</span></th>
 						<td><input name="resume.loginpwd" class="easyui-textbox" type="password" style="width:160px;height:24px;" data-options="required:true" /></td>
-						<th>电子邮箱</th>
-						<td><input class="easyui-textbox" name="resume.email" style="width:160px;height:24px;" data-options=""/></td>
+						<th>电子邮箱<span style="color:red">*</span></th>
+						<td><input class="easyui-textbox" name="resume.email" style="width:160px;height:24px;" data-options="required:true"/></td>
 					</tr>
 					<tr>
 						<th>姓名<span style="color:red">*</span></th>
@@ -529,7 +573,7 @@ function cleanFormFun(formId){
 						<th>家庭电话</th>
 						<td><input class="easyui-textbox"  name="resume.homeTel" style="width:160px;height:24px;" /></td>
 						<th>证件类型</th>
-						<td><select class="easyui-combobox" name="resume.cardType"  data-options="valueField:'id',textField:'text'" style="width:160px;height:24px;">
+						<td><select class="easyui-combobox" name="resume.cardType"  data-options="required:true,valueField:'id',textField:'text'" style="width:160px;height:24px;">
 						        <option value="0">身份证</option>
 						        <option value="1">学生证</option>
 						        <option value="2">工作证</option>
@@ -539,8 +583,8 @@ function cleanFormFun(formId){
 						        <option value="6">户口本</option>
 						        <option value="7">其他</option>
 						    </select></td>
-						<th>证件号码</th>
-						<td><input class="easyui-textbox" name="resume.idNumber" style="width:160px;height:24px;"/></td>
+						<th>证件号码<span style="color:red">*</span></th>
+						<td><input class="easyui-textbox" name="resume.idNumber"  data-options="required:true" style="width:160px;height:24px;"/></td>
 					</tr>
 					<tr>
 						<th>QQ号码</th>
@@ -587,11 +631,11 @@ function cleanFormFun(formId){
 					<table>
 					<tr>
 					<td><input hidden="true" id="editjobintenlist" name="resumeJobInten.jobIntenId"></input></td>
-					<td><input hidden="true" name="resumeJobInten.resumeId"></input></td>
+					<td><input hidden="true" id="editjobinten_resumeid" name="resumeJobInten.resumeId" ></input></td>
 					</tr>
 					<tr>
-						<th>工作类型</th>
-						<td><select class="easyui-combobox" name="resumeJobInten.jobTerm"  data-options="valueField:'id',textField:'text'" style="width:160px;height:24px;">
+						<th>工作类型<span style="color:red">*</span></th>
+						<td><select class="easyui-combobox" name="resumeJobInten.jobTerm"  data-options="required:true,valueField:'id',textField:'text'" style="width:160px;height:24px;">
 						        <option value="0">全职</option>
 						        <option value="1">兼职</option>
 						        <option value="2">实习</option>
@@ -600,10 +644,10 @@ function cleanFormFun(formId){
 						<th>工作地点<span style="color:red">*</span></th>
 						<td><input name="resumeJobInten.jobArea" class="easyui-textbox" style="width:160px;height:24px;"
 							data-options="required:true" /></td>
-						<th>工作行业<span style="color:red">*</span></th>
+						<th>工作行业</th>
 						<td><input name="resumeJobInten.industryType" class="easyui-textbox"  style="width:160px;height:24px;"
-							 data-options="required:true" /></td>
-						<th>工作职位<span style="color:red">*</span></th>
+							  /></td>
+						<th>工作职位</th>
 						<td><input class="easyui-textbox" name="resumeJobInten.funType" style="width:160px;height:24px;" data-options=""/></td>
 					</tr>
 					<tr>
@@ -614,8 +658,8 @@ function cleanFormFun(formId){
 						
 					</tr>
 					<tr>
-					<th>自我评价</th>
-					<td colspan=8><input class="easyui-textbox" name="resumeJobInten.introduction" data-options="multiline:true" style="width:100%;height:60px;" /></td>
+					<th>自我评价<span style="color:red">*</span></th>
+					<td colspan=8><input class="easyui-textbox" name="resumeJobInten.introduction" data-options="multiline:true,required:true" style="width:100%;height:60px;" /></td>
 					</tr>
 					<tr>
 					  <th></th>
@@ -656,39 +700,52 @@ function cleanFormFun(formId){
 					<table>
 					<tr>
 					<td><input hidden="true" name="resumeWork.workId"></input></td>
-					<td><input hidden="true" name="resumeWork.resumeId"></input></td>
+					<td><input hidden="true" id="editwork_resumeid" name="resumeWork.resumeId"></input></td>
 					</tr>
 					<tr>
-						<th>开始日期</th>
+						<th>开始日期<span style="color:red">*</span></th>
 						<td><input name="resumeWork.workFromDate"  class="easyui-datebox" style="width:160px;height:24px;" 
 							data-options="required:true" /></td>
 						<th>结束日期<span style="color:red">*</span></th>
 						<td><input name="resumeWork.workToDate" class="easyui-datebox" style="width:160px;height:24px;"
 							data-options="required:true" /></td>
-						<th>行业<span style="color:red">*</span></th>
+						<th>行业</th>
 						<td><input name="resumeWork.industry" class="easyui-textbox"  style="width:160px;height:24px;"
-							 data-options="required:true" /></td>
+							 data-options="" /></td>
 						<th>公司<span style="color:red">*</span></th>
-						<td><input class="easyui-textbox" name="resumeWork.company" style="width:160px;height:24px;" data-options=""></input></td>
+						<td><input class="easyui-textbox" name="resumeWork.company" style="width:160px;height:24px;" data-options="required:true"></input></td>
 		
 					</tr>
 					<tr>
 						<th>公司性质</th>
-						<td><input class="easyui-textbox" name="resumeWork.companyType" style="width:160px;height:24px;" /></td>
+						<td><select class="easyui-combobox" name="resumeWork.companyType" style="width:160px;height:24px;">
+						        <option value="0">国企</option>
+						        <option value="1">民企</option>
+						        <option value="2">外企</option>
+						        <option value="3">其他</option>
+							    </select></td>
 						<th>公司规模</th>
-						<td><input class="easyui-textbox" name="resumeWork.companySize" style="width:160px;height:24px;" /></td>
+						<td><select class="easyui-combobox" name="resumeWork.companySize" style="width:160px;height:24px;">
+						        <option value="0">50人以下</option>
+						        <option value="1">50-100人</option>
+						        <option value="2">100-500人</option>
+						        <option value="3">500-1000人</option>
+						        <option value="4">1000-2000人</option>
+						        <option value="4">2000-5000人</option>
+						        <option value="4">5000人以上</option>
+							    </select></td>
 						<th>所在部门</th>
 						<td><input class="easyui-textbox" name="resumeWork.division" style="width:160px;height:24px;" /></td>
 						<th>职位</th>
 						<td><input class="easyui-textbox" name="resumeWork.position" style="width:160px;height:24px;" /></td>
 					</tr>
 					<tr>
-						<th>离职原因</th>
-						<td colspan=8><input class="easyui-textbox" name="resumeWork.leaveReason" style="width:100%;height:24px;" /></td>
+						<th>离职原因<span style="color:red">*</span></th>
+						<td colspan=8><input class="easyui-textbox" name="resumeWork.leaveReason" style="width:100%;height:24px;" data-options="required:true" /></td>
 					</tr>
 					<tr>
-						<th>工作描述</th>
-						<td colspan=8><input class="easyui-textbox" name="resumeWork.responsiblity" data-options="multiline:true" style="width:100%;height:60px;" /></td>
+						<th>工作描述<span style="color:red">*</span></th>
+						<td colspan=8><input class="easyui-textbox" name="resumeWork.responsiblity" data-options="multiline:true,required:true" style="width:100%;height:60px;"  /></td>
 					</tr>
 					<tr>
 						<th>主要成绩</th>
@@ -731,12 +788,12 @@ function cleanFormFun(formId){
 					<table>
 					<tr>
 					<td><input hidden="true" name="resumeProject.projectId"></input></td>
-					<td><input hidden="true" name="resumeProject.resumeId"></input></td>
+					<td><input hidden="true" id="editproject_resumeid" name="resumeProject.resumeId"></input></td>
 					</tr>
 					 <tr>
-						<th>项目名称</th>
-						<td><input class="easyui-textbox" name="resumeProject。projectTitle" style="width:160px;height:24px;"></td>
-						<th>开始日期</th>
+						<th>项目名称<span style="color:red">*</span></th>
+						<td><input class="easyui-textbox" name="resumeProject。projectTitle" data-options="required:true" style="width:160px;height:24px;"></td>
+						<th>开始日期<span style="color:red">*</span></th>
 						<td><input name="resumeProject。projectFromDate"  class="easyui-datebox" style="width:160px;height:24px;" 
 							data-options="required:true" /></td>
 						<th>结束日期<span style="color:red">*</span></th>
@@ -747,15 +804,15 @@ function cleanFormFun(formId){
 						
 					</tr>
 					<tr>
-						<th>项目经理<span style="color:red">*</span></th>
+						<th>项目经理</th>
 						<td><input name="resumeProject。projectManager" class="easyui-textbox"  style="width:160px;height:24px;"
-							 data-options="required:true" /></td>
-						<th>其他成员<span style="color:red">*</span></th>
+							  /></td>
+						<th>其他成员</th>
 						<td><input class="easyui-textbox" name="resumeProject。otherMembers" style="width:160px;height:24px;" data-options=""></input></td>
 					</tr>
 					<tr>
-						<th>项目描述</th>
-						<td colspan=8><input class="easyui-textbox" name="resumeProject.projectDetail" data-options="multiline:true" style="width:100%;height:60px;" /></td>
+						<th>项目描述<span style="color:red">*</span></th>
+						<td colspan=8><input class="easyui-textbox" name="resumeProject.projectDetail" data-options="multiline:true,required:true" style="width:100%;height:60px;" /></td>
 					</tr>
 					<tr>
 						<th>我的职责</th>
@@ -796,17 +853,17 @@ function cleanFormFun(formId){
 							<table>
 							<tr>
 							<td><input hidden="true" name="resumeEdu.eduId"></input></td>
-							<td><input hidden="true" name="resumeEdu.resumeId"></input></td>
+							<td><input hidden="true" id="editedu_resumeid" name="resumeEdu.resumeId"></input></td>
 							</tr>
 							<tr>
-								<th>开始日期</th>
+								<th>开始日期<span style="color:red">*</span></th>
 								<td><input name="resumeEdu。eduFromDate"  class="easyui-datebox" style="width:160px;height:24px;" 
 									data-options="required:true" /></td>
-								<th>结束日期<span style="color:red">*</span></th>
+								<th>结束日期<span style="color:red">*</span><span style="color:red">*</span></th>
 								<td><input name="resumeEdu。eduToDate" class="easyui-datebox" style="width:160px;height:24px;"
 									data-options="required:true" /></td>
-								<th>学历</th>
-								<td><select class="easyui-combobox" name="resumeEdu。degree" style="width:160px;height:24px;">
+								<th>学历<span style="color:red">*</span></th>
+								<td><select class="easyui-combobox" name="resumeEdu。degree" data-options="required:true" style="width:160px;height:24px;">
 						        <option value="0">博士</option>
 						        <option value="1">硕士</option>
 						        <option value="2">本科</option>
@@ -821,7 +878,7 @@ function cleanFormFun(formId){
 									 data-options="required:true" /></td>
 							</tr>
 							<tr>
-								<th>专业<span style="color:red">*</span></th>
+								<th>专业</th>
 								<td><input class="easyui-textbox" name="resumeEdu。subMajor" style="width:160px;height:24px;" data-options="" /></td>
 							</tr>
 							<tr>
@@ -863,11 +920,11 @@ function cleanFormFun(formId){
 							<table>
 							<tr>
 							<td><input hidden="true" name="resumeLan.lanId" /></td>
-							<td><input hidden="true" name="resumeLan.resumeId" /></td>
+							<td><input hidden="true" id="editlan_resumeid" name="resumeLan.resumeId" /></td>
 							</tr>
 							<tr>
-								<th>语言类别</th>
-								<td><select class="easyui-combobox" name="resumeLan。languageCategory" style="width:160px;height:24px">
+								<th>语言类别<span style="color:red">*</span></th>
+								<td><select class="easyui-combobox" name="resumeLan。languageCategory" data-options="required:true" style="width:160px;height:24px">
 						        <option value="0">英语</option>
 						        <option value="1">日语</option>
 						        <option value="2">德语</option>
@@ -880,23 +937,23 @@ function cleanFormFun(formId){
 							    </select></td>
 								<th>语言等级</th>
 								<td><input name="resumeEdu。languageLevel" class="easyui-textbox"  style="width:160px;height:24px;"
-									 data-options="required:true" /></td>
-								<th>掌握程度</th>
-								<td><select class="easyui-combobox" name="resumeLan。master" style="width:160px;height:24px;">
+									  /></td>
+								<th>掌握程度<span style="color:red">*</span></th>
+								<td><select class="easyui-combobox" name="resumeLan。master" data-options="required:true" style="width:160px;height:24px;">
 						         <option value="0">优秀</option>
 						         <option value="1">良好</option>
 						         <option value="3">一般</option>
 							    </select></td>
 							</tr>
 								<tr>
-								<th>读写能力</th>
-								<td><select class="easyui-combobox" name="resumeLan。rwAbility" style="width:160px;height:24px;">
+								<th>读写能力<span style="color:red">*</span></th>
+								<td><select class="easyui-combobox" name="resumeLan。rwAbility" data-options="required:true" style="width:160px;height:24px;">
 						        <option value="0">优秀</option>
 						        <option value="1">良好</option>
 						        <option value="3">一般</option>
 							    </select></td>
-								<th>听说能力</th>
-								<td><select class="easyui-combobox" name="resumeLan。lsAbility" style="width:160px;height:24px;">
+								<th>听说能力<span style="color:red">*</span></th>
+								<td><select class="easyui-combobox" name="resumeLan。lsAbility" data-options="required:true" style="width:160px;height:24px;">
 						         <option value="0">优秀</option>
 						        <option value="1">良好</option>
 						        <option value="3">一般</option>
@@ -922,14 +979,14 @@ function cleanFormFun(formId){
 					<table>
 					<tr>
 						<td><input hidden="true" id="editotherinfolist" name="resumeOtherInfo.otherId"></input></td>
-						<td><input hidden="true" name="resumeOtherInfo.resumeId"></input></td>
+						<td><input hidden="true" id="editotherinfo_resumeid" name="resumeOtherInfo.resumeId"></input></td>
 					</tr>
 					<tr>
 						<th>个人爱好<span style="color:red">*</span></th>
 						<td><input name="resumeOtherInfo。personalHobby" class="easyui-textbox"  style="width:200px;height:24px;"
 							 data-options="required:true" /></td>
 						<th>个人特长<span style="color:red">*</span></th>
-						<td><input class="easyui-textbox" name="resumeOtherInfo。specialSkill" style="width:200px;height:24px;" data-options=""></input></td>
+						<td><input class="easyui-textbox" name="resumeOtherInfo。specialSkill" style="width:200px;height:24px;" data-options="required:true" ></input></td>
 						<th>&nbsp</th>
 						<td>&nbsp</td>
 						<th>&nbsp</th>
