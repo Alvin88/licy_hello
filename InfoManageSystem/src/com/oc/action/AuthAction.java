@@ -15,7 +15,7 @@ import com.oc.utils.system.Json;
 import com.opensymphony.xwork2.ModelDriven;
 
 @Namespace("/")
-@Action(value = "authAction", results = { @Result(name = "authAdd", location = "/admin/authAdd.jsp"), @Result(name = "authEdit", location = "/admin/authEdit.jsp") })
+@Action(value = "authAction", results = { @Result(name = "authAdd", location = "/views/admin/authAdd.jsp"), @Result(name = "authEdit", location = "/views/admin/authEdit.jsp") })
 public class AuthAction extends BaseAction implements ModelDriven<Auth> {
 	private AuthServiceI authService;
 

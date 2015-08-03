@@ -13,7 +13,7 @@ import com.oc.utils.system.Json;
 import com.opensymphony.xwork2.ModelDriven;
 
 @Namespace("/")
-@Action(value = "roleAction", results = { @Result(name = "roleAdd", location = "/admin/roleAdd.jsp"), @Result(name = "roleEdit", location = "/admin/roleEdit.jsp") })
+@Action(value = "roleAction", results = { @Result(name = "roleAdd", location = "/views/admin/roleAdd.jsp"), @Result(name = "roleEdit", location = "/views/admin/roleEdit.jsp") })
 public class RoleAction extends BaseAction implements ModelDriven<Role> {
 	private Role role = new Role();
 
@@ -52,6 +52,7 @@ public class RoleAction extends BaseAction implements ModelDriven<Role> {
 		writeJson(roleService.datagrid(role));
 	}
 
+	/**跳转到roleAdd页面*/
 	public String roleAdd() {
 		return "roleAdd";
 	}
