@@ -323,6 +323,133 @@ public class RepairServiceImpl implements RepairServiceI {
 		cddelete.setCdesc("");
 		authDao.saveOrUpdate(cddelete);
 
+		//简历管理
+		Tauth jlgl = new Tauth();
+		jlgl.setCid("jlgl");
+		jlgl.setTauth(xtgl);
+		jlgl.setName("简历管理");
+		jlgl.setUrl("");
+		jlgl.setSeq(BigDecimal.valueOf(5));
+		jlgl.setCdesc("");
+		authDao.saveOrUpdate(jlgl);
+
+		Tauth jlcx = new Tauth();
+		jlcx.setCid("jlcx");
+		jlcx.setTauth(jlgl);
+		jlcx.setName("简历查询");
+		jlcx.setUrl("/authAction!treegrid.action");
+		jlcx.setSeq(BigDecimal.valueOf(1));
+		jlcx.setCdesc("");
+		authDao.saveOrUpdate(jlcx);
+
+		Tauth jltjym = new Tauth();
+		jltjym.setCid("jltj");
+		jltjym.setTauth(jlgl);
+		jltjym.setName("添加简历页面");
+		jltjym.setUrl("/authAction!authAdd.action");
+		jltjym.setSeq(BigDecimal.valueOf(2));
+		jltjym.setCdesc("");
+		authDao.saveOrUpdate(jltjym);
+
+		Tauth jltj = new Tauth();
+		jltj.setCid("jltj");
+		jltj.setTauth(jlgl);
+		jltj.setName("权限添加");
+		jltj.setUrl("/authAction!add.action");
+		jltj.setSeq(BigDecimal.valueOf(3));
+		jltj.setCdesc("");
+		authDao.saveOrUpdate(jltj);
+
+		Tauth jlbjym = new Tauth();
+		jlbjym.setCid("jlbjym");
+		jlbjym.setTauth(jlgl);
+		jlbjym.setName("编辑权限页面");
+		jlbjym.setUrl("/authAction!authEdit.action");
+		jlbjym.setSeq(BigDecimal.valueOf(4));
+		jlbjym.setCdesc("");
+		authDao.saveOrUpdate(jlbjym);
+
+		Tauth jlbj = new Tauth();
+		jlbj.setCid("jlbj");
+		jlbj.setTauth(jlgl);
+		jlbj.setName("权限编辑");
+		jlbj.setUrl("/demo/authAction!edit.action");
+		jlbj.setSeq(BigDecimal.valueOf(5));
+		jlbj.setCdesc("");
+		authDao.saveOrUpdate(jlbj);
+
+		Tauth jldelete = new Tauth();
+		jldelete.setCid("jldelete");
+		jldelete.setTauth(qxgl);
+		jldelete.setName("权限删除");
+		jldelete.setUrl("/authAction!delete.action");
+		jldelete.setSeq(BigDecimal.valueOf(6));
+		jldelete.setCdesc("");
+		authDao.saveOrUpdate(jldelete);
+		
+		//公司管理
+		Tauth gsgl = new Tauth();
+		gsgl.setCid("gsgl");
+		gsgl.setTauth(xtgl);
+		gsgl.setName("简历管理");
+		gsgl.setUrl("");
+		gsgl.setSeq(BigDecimal.valueOf(5));
+		gsgl.setCdesc("");
+		authDao.saveOrUpdate(gsgl);
+
+		Tauth gscx = new Tauth();
+		gscx.setCid("gscx");
+		gscx.setTauth(gsgl);
+		gscx.setName("简历查询");
+		gscx.setUrl("/companyAction!treegrid.action");
+		gscx.setSeq(BigDecimal.valueOf(1));
+		gscx.setCdesc("");
+		authDao.saveOrUpdate(gscx);
+
+		Tauth gstjym = new Tauth();
+		gstjym.setCid("gstj");
+		gstjym.setTauth(gsgl);
+		gstjym.setName("添加简历页面");
+		gstjym.setUrl("/companyAction!authAdd.action");
+		gstjym.setSeq(BigDecimal.valueOf(2));
+		gstjym.setCdesc("");
+		authDao.saveOrUpdate(gstjym);
+
+		Tauth gstj = new Tauth();
+		gstj.setCid("gstj");
+		gstj.setTauth(gsgl);
+		gstj.setName("权限添加");
+		gstj.setUrl("/companyAction!add.action");
+		gstj.setSeq(BigDecimal.valueOf(3));
+		gstj.setCdesc("");
+		authDao.saveOrUpdate(gstj);
+
+		Tauth gsbjym = new Tauth();
+		gsbjym.setCid("gsbjym");
+		gsbjym.setTauth(gsgl);
+		gsbjym.setName("编辑权限页面");
+		gsbjym.setUrl("/companyAction!authEdit.action");
+		gsbjym.setSeq(BigDecimal.valueOf(4));
+		gsbjym.setCdesc("");
+		authDao.saveOrUpdate(gsbjym);
+
+		Tauth gsbj = new Tauth();
+		gsbj.setCid("gsbj");
+		gsbj.setTauth(gsgl);
+		gsbj.setName("权限编辑");
+		gsbj.setUrl("/demo/companyAction!edit.action");
+		gsbj.setSeq(BigDecimal.valueOf(5));
+		gsbj.setCdesc("");
+		authDao.saveOrUpdate(gsbj);
+
+		Tauth gsdelete = new Tauth();
+		gsdelete.setCid("gsdelete");
+		gsdelete.setTauth(qxgl);
+		gsdelete.setName("权限删除");
+		gsdelete.setUrl("/companyAction!delete.action");
+		gsdelete.setSeq(BigDecimal.valueOf(6));
+		gsdelete.setCdesc("");
+		authDao.saveOrUpdate(gsdelete);
 	}
 
 	private void repairUser() {

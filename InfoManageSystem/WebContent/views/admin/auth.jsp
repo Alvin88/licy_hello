@@ -131,7 +131,8 @@
 			buttons : [ {
 				text : '添加',
 				handler : function() {
-					var f = p.find('from');
+					var f = p.find('form');
+					
 					f.form('submit', {
 						url : '${pageContext.request.contextPath}/authAction!add.action',
 						success : function(d) {
@@ -155,6 +156,10 @@
 				});
 			}
 		});
+	}
+	function remove(){
+		
+		
 	}
 </script>
 <table id="treegrid"></table>

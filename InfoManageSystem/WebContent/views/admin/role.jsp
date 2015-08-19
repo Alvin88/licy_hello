@@ -82,7 +82,7 @@
 		});
 	});
 	function append() {
-		var ad = $('<div/>').dialog({
+		var ad =  parent.sy.dialog({
 			title : '添加用户角色',
 			href : '${pageContext.request.contextPath}/roleAction!roleAdd.action',
 			width : 420,
