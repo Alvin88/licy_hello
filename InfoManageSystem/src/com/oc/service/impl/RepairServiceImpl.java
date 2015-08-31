@@ -343,7 +343,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		authDao.saveOrUpdate(jlcx);
 
 		Tauth jltjym = new Tauth();
-		jltjym.setCid("jltj");
+		jltjym.setCid("jltjym");
 		jltjym.setTauth(jlgl);
 		jltjym.setName("添加简历页面");
 		jltjym.setUrl("/authAction!authAdd.action");
@@ -407,7 +407,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		authDao.saveOrUpdate(gscx);
 
 		Tauth gstjym = new Tauth();
-		gstjym.setCid("gstj");
+		gstjym.setCid("gstjym");
 		gstjym.setTauth(gsgl);
 		gstjym.setName("添加简历页面");
 		gstjym.setUrl("/companyAction!authAdd.action");
