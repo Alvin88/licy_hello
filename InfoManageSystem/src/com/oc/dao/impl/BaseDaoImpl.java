@@ -175,7 +175,7 @@ public class BaseDaoImpl<T> implements BaseDaoI<T> {
 
 	@Override
 	public T getObject(String hql, Map<String, Object> params) {
-		Query q = this.sessionFactory.getCurrentSession().createQuery(hql);
+		Query q = this.getCurrentSession().createQuery(hql);
 		if (params != null && !params.isEmpty()) {
 			for (String o : params.keySet()) {
 				q.setParameter(o, params.get(o));
@@ -190,7 +190,7 @@ public class BaseDaoImpl<T> implements BaseDaoI<T> {
 
 	@Override
 	public List<T> find(String hql, Map<String, Object> params) {
-		Query q = this.sessionFactory.getCurrentSession().createQuery(hql);
+		Query q = this.getCurrentSession().createQuery(hql);
 		if (params != null && !params.isEmpty()) {
 			for (String key : params.keySet()) {
 				q.setParameter(key, params.get(key));
@@ -202,7 +202,7 @@ public class BaseDaoImpl<T> implements BaseDaoI<T> {
 	@Override
 	public List<T> find(String hql, Map<String, Object> params, int page,
 			int rows) {
-		Query q = this.sessionFactory.getCurrentSession().createQuery(hql);
+		Query q = this.getCurrentSession().createQuery(hql);
 		if (params != null && !params.isEmpty()) {
 			for (String key : params.keySet()) {
 				q.setParameter(key, params.get(key));
@@ -213,7 +213,7 @@ public class BaseDaoImpl<T> implements BaseDaoI<T> {
 
 	@Override
 	public List<T> find(String hql, int page, int rows) {
-		Query q = this.sessionFactory.getCurrentSession().createQuery(hql);
+		Query q = this.getCurrentSession().createQuery(hql);
 	  return q.setFirstResult((page - 1) * rows).setMaxResults(rows).list();
 	}
 
