@@ -43,17 +43,23 @@ width: 80px;
   </div>
     <div>
         <label for="level">客户等级:</label>
-        <input class="easyui-validatebox" type="text" name="level"  />
+        
+        <select id="cc" class="easyui-combobox" name="companyLevel" style="width:150px;">
+       <option value="A">A</option>
+       <option value="B">B</option>
+       <option value="C">C</option>
+       <option value="D">D</option>
+</select>
     </div>
       <div>
-        <label for="traceDateCount">跟进天数:</label>
-        <input class="easyui-validatebox" type="text" name="traceDateCount"  />
+        <label for="traceDateCount">公司地址:</label>
+        <input class="easyui-validatebox" type="text" name="address"  />
     </div>
-    <br/>
-        <div>
+    
+      <!--   <div>
         <label for="traceState">跟进记录:</label>
         <textarea class="easyui-validatebox"  name='traceState' data-options="required:true" />
-    </div>
+    </div> -->
         <div>
         <label for="description">公司简介:</label>
         <textarea class="easyui-validatebox" type="text" name="description" data-options="required:true" />

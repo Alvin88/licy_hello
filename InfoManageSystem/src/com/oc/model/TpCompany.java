@@ -1,9 +1,15 @@
 package com.oc.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.oc.dto.Page;
@@ -58,9 +64,14 @@ public class TpCompany extends Page {
 	 */
 	private String traceState;
 	
-	private int level ;
+	private String companyLevel ;
 	
 	private  int traceDateCount;
+	
+	
+	private String address;
+	
+	private List<TTraceRecord> traceRecords = new ArrayList<TTraceRecord>(0);
 	
 	
 
@@ -146,13 +157,7 @@ public class TpCompany extends Page {
 		this.traceState = traceState;
 	}
 
-	public int getLevel() {
-		return level;
-	}
-
-	public void setLevel(int level) {
-		this.level = level;
-	}
+   
 
 	public int getTraceDateCount() {
 		return traceDateCount;
@@ -161,6 +166,34 @@ public class TpCompany extends Page {
 	public void setTraceDateCount(int traceDateCount) {
 		this.traceDateCount = traceDateCount;
 	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getCompanyLevel() {
+		return companyLevel;
+	}
+
+	public void setCompanyLevel(String companyLevel) {
+		this.companyLevel = companyLevel;
+	}
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "company")
+	public List<TTraceRecord> getTraceRecords() {
+		return traceRecords;
+	}
+
+	public void setTraceRecords(List<TTraceRecord> traceRecords) {
+		this.traceRecords = traceRecords;
+	}
+
+
+	
+	
 	
 	
 

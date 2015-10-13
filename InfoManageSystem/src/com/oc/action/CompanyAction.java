@@ -10,6 +10,7 @@ import com.oc.dto.User;
 import com.oc.model.TpCompany;
 import com.oc.service.BaseServiceI;
 import com.oc.service.CompanyServiceI;
+import com.oc.utils.system.Json;
 import com.opensymphony.xwork2.ModelDriven;
 
 @Namespace("/")
@@ -23,6 +24,8 @@ public class CompanyAction extends BaseAction<TpCompany> implements  ModelDriven
 	
 	@Autowired
 	private CompanyServiceI companyService;
+	
+	private String text;
 	
 	private TpCompany tpCompany = new TpCompany();
 
@@ -38,4 +41,24 @@ public class CompanyAction extends BaseAction<TpCompany> implements  ModelDriven
 		return this.tpCompany;
 	}
 
+	
+	public  void addRecord(){
+	TpCompany comp = companyService.addTraceRecord(tpCompany.getId(),text);
+		
+		Json j = new Json();
+		j.setSuccess(true);
+		j.setMsg("编辑成功");
+		j.setObj(comp);
+		writeJson(j);
+	}
+	public void getRecordDatagrid() {
+		super.writeJson(companyService.getRecordDatagrid(tpCompany));
+	}
+	public String getText() {
+		return text;
+	}
+
+	public void setText(String text) {
+		this.text = text;
+	}
 }

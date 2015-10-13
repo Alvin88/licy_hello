@@ -4,9 +4,9 @@
 <script type="text/javascript" src="jslib/smartWizard/jquery.smartWizard.js"></script>
 <script type="text/javascript" src="jslib/ystep/js/ystep.js"></script>
 <script type="text/javascript">
-	var dg = $('#company_gsgl_datagrid');
+	var company_dg = $('#company_gsgl_datagrid');
 	$(function() {
-		dg.datagrid({
+		company_dg.datagrid({
 					title : '公司数据',
 					border : false,
 					fitColum : true,
@@ -68,8 +68,8 @@
 						field : 'requireCertificate',
 						width : 150,
 					},{
-						title : '跟踪记录',
-						field : 'traceState',
+						title : '跟踪天数',
+						field : 'traceDateCount',
 						width : 150,
 					}] ],
 					toolbar : [ {
@@ -88,28 +88,40 @@
 						text : '删除',
 						iconCls : 'icon-remove',
 						handler : function() {
-							remove();
+							removeCompany();
+						}
+					}, '-', {
+						text : '添加跟进记录',
+						iconCls : 'icon-remove',
+						handler : function() {
+							addRecord();
+						}
+					}, '-', {
+						text : '查看跟进记录',
+						iconCls : 'icon-remove',
+						handler : function() {
+							queryRecord();
 						}
 					}, '-', {
 						text : '取消选中',
 						iconCls : 'icon-redo',
 						handler : function() {
-							dg.datagrid('rejectChanges');
-							dg.datagrid('unselectAll');
+							company_dg.datagrid('rejectChanges');
+							company_dg.datagrid('unselectAll');
 						}
 					} ]
 				});
 		$('#wizard').smartWizard();
 	});
-	function _search() {
+	function compnay_search() {
 		var searchForm = $('#company_gsgl_searchForm').form();
-		dg.datagrid('load', serializeObject(searchForm));
+		company_dg.datagrid('load', serializeObject(searchForm));
 	}
-	function cleanSearch() {
-		dg.datagrid('load', {});
+	function compnay_cleanSearch() {
+		company_dg.datagrid('load', {});
 		$('#company_gsgl_searchForm input').val('');
 	}
-	function moreSearchCondition(){
+	function compnay_moreSearchCondition(){
 		$('#company_gsgl_searchForm input').hide();
 	}
 	function addcompany() {
@@ -137,8 +149,8 @@
 		});
 		//$('#company_gsgl_addDialog').window('open');
 	}
-	function remove() {
-		var rows = dg.datagrid('getChecked');
+	function removeCompany() {
+		var rows = company_dg.datagrid('getChecked');
 		var ids = [];
 		if (rows.length > 0) {
 			$.messager
@@ -157,8 +169,8 @@
 												},
 												dataType : 'json',
 												success : function(d) {
-													dg.datagrid('reload');
-													dg.datagrid('unselectAll');
+													company_dg.datagrid('reload');
+													company_dg.datagrid('unselectAll');
 													$.messager.show({
 														title : '提示',
 														msg : d.msg
@@ -172,14 +184,13 @@
 		}
 	}
     function saveCompany(d){
-    	alert('sdf')
     	$('#company_gsglAdd_form').form('submit',{
 			 url:'${pageContext.request.contextPath}/companyAction!add.action',
 	            success:function(r){
 	            	obj=$.parseJSON(r);
 	                 if(obj.success){
 	                 d.dialog('close');
-	                 dg.datagrid('reload'); 
+	                 company_dg.datagrid('reload'); 
 	            	 $.messager.show({
 	            		 title:'提示',
 	            		 msg:obj.msg
@@ -191,7 +202,7 @@
 	});
     }
 	function editcompany() {
-		var rows = dg.datagrid('getChecked');
+		var rows = company_dg.datagrid('getChecked');
 		if (rows.length == 1) {
 			//$('#company_gsgl_editDialog').window('open');
 		var d=	$('#company_gsgl_editDialog').dialog({
@@ -210,8 +221,8 @@
 						            	obj=$.parseJSON(r);
 						                 if(obj.success){
 						                 d.dialog('close');
-						                 dg.datagrid('updateRow',{
-						                	index:dg.datagrid('getRowIndex',rows[0].id),
+						                 company_dg.datagrid('updateRow',{
+						                	index:company_dg.datagrid('getRowIndex',rows[0].id),
 						                	row:obj.obj
 						                }); 
 						            	 $.messager.show({
@@ -237,7 +248,91 @@
 			$.messager.alert('提示', '请勾选一条要编辑的数据');
 		}
 	}
+	function addRecord() {
+		var rows = company_dg.datagrid('getChecked');
+		if (rows.length == 1) {
+			//$('#company_gsgl_editDialog').window('open');
+		var d=	$('#company_gsgl_addRecordDialog').dialog({
+			    width:300,
+			    height:200,
+			    title : '添加跟踪记录',
+				href : '${pageContext.request.contextPath}/views/company/companyAddTrecord.jsp',
+			    inline:true,
+			    modal:true,
+			    buttons : [ {
+					text : '添加',
+					handler : function() {
+						$('#company_gsglAddRecord_Form').form('submit',{
+							 url:'${pageContext.request.contextPath}/companyAction!addRecord.action',
+						            success:function(r){
+						            	obj=$.parseJSON(r);
+						                 if(obj.success){
+						                 d.dialog('close');
+						                 company_dg.datagrid('updateRow',{
+						                	index:company_dg.datagrid('getRowIndex',rows[0].id),
+						                	row:obj.obj
+						                }); 
+						            	 $.messager.show({
+						            		 title:'提示',
+						            		 msg:obj.msg
+						            	 });
+						                 }else{
+						                	 $.messager.alert('提示', obj.msg);
+						                 }
+								    }
+						});
+					}
+				} ],
+				onClose : function() {
+					//关闭这里不能销毁
+				},
+				onLoad : function() {
+				console.log(rows[0])
+	                $('#company_gsglAddRecord_Form').form('load',rows[0]);
+				}
+			});
+		} else {
+			$.messager.alert('提示', '请勾选一条要编辑的数据');
+		}
+	}
+
+	function queryRecord(){
+		var rows = company_dg.datagrid('getChecked');
+		if (rows.length == 1) {
+		$('#company_gsgl_recorddatagrid').datagrid({
 	
+			width:350,
+		    height:200,
+			url : '${pageContext.request.contextPath}/companyAction!getRecordDatagrid.action',
+			queryParams: {'id':rows[0].id},
+			frozenColumns : [ [ {
+				field : 'id',
+				title : '编号',
+				checkbox : true
+			}] ],
+			columns : [ [ {
+				field : 'dtime',
+				title : '日期',
+				width : 140,
+			
+			}, {
+				field : 'text',
+				title : '内容',
+				width : 200
+			}] ]
+			
+		});
+	//	$('#company_gsgl_recorddatagrid').datagrid('load', {'id':rows[0].id});
+		var d=	$('#company_gsgl_queryRecordDialog').dialog({
+			title:'跟踪记录',
+
+			width:400,
+		    height:250,
+		});
+		} else {
+			$.messager.alert('提示', '请勾选一条要编辑的数据');
+		}
+	}
 </script>
 <div class="easyui-layout" data-options="fit:true">
 	<div data-options="region:'north',border:false,title:'过滤条件'"
@@ -265,9 +360,9 @@
 						<th></th>
 						<td>
 					<a href="javascript:void(0);"
-							class="easyui-linkbutton" onclick="_search();">过滤</a> <a
+							class="easyui-linkbutton" onclick="compnay_search();">过滤</a> <a
 							href="javascript:void(0);" class="easyui-linkbutton"
-							onclick="cleanSearch();">取消</a>
+							onclick="compnay_cleanSearch();">取消</a>
 						</td>
 						
 					</tr>
@@ -301,4 +396,9 @@
  </div>
 </div>
 <div id="company_gsgl_editDialog" style="width:90%;height:90%;" align="center">
+</div>
+<div id="company_gsgl_addRecordDialog" style="width:90%;height:90%;" align="center">
+</div>
+<div id="company_gsgl_queryRecordDialog" style="width:90%;height:90%;" align="center">
+<table id="company_gsgl_recorddatagrid"></table>
 </div>

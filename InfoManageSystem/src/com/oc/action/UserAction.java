@@ -115,7 +115,7 @@ public class UserAction extends BaseAction<User> implements ModelDriven<User> {
 		j.setSuccess(true);
 		j.setMsg("编辑成功");
 		j.setObj(u);
-		writeJson(j);
+		 
 	}
 
 	public void doNotNeedSession_logout() {
