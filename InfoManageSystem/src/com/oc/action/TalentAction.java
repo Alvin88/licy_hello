@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.oc.action.base.BaseAction;
 import com.oc.dto.Talent;
+import com.oc.dto.TalentRecord;
 import com.oc.service.BaseServiceI;
 import com.oc.service.TalentServiceI;
 import com.oc.utils.system.Json;
@@ -22,7 +23,7 @@ public class TalentAction extends BaseAction{
 	//简历id，从前台页面传递过来，用来查询简历其他信息
 	private String talentIds;//批量删除简历，前台传递过来的ids
 	Talent talent = new Talent();//简历基本信息实体
-	
+	TalentRecord talentRecord = new TalentRecord();//人才跟进记录基本信息
 	
 
 	@Autowired
@@ -46,6 +47,28 @@ public class TalentAction extends BaseAction{
 		}
 		writeJson(j);
 		return null;
+	}
+	
+	/**
+	 * 添加跟进记录
+	 * */
+	public void addRecord(){
+		Json j = new Json();
+		try {
+			boolean result = talentService.addRecord(talentRecord);
+			if(result){
+				j.setSuccess(true);
+				j.setMsg("跟进记录添加成功");
+				j.setObj(talentRecord.getRecordId());//新增后的实体id
+			}else{
+				j.setSuccess(false);
+				j.setMsg("跟进记录添加失败");
+			}
+		} catch (Exception e) {
+			j.setSuccess(false);
+			j.setMsg("跟进记录添加失败");
+		}
+		writeJson(j);
 	}
 	
 	/**
@@ -99,4 +122,14 @@ public class TalentAction extends BaseAction{
 	public void setTalentService(TalentServiceI talentService) {
 		this.talentService = talentService;
 	}
+
+	public TalentRecord getTalentRecord() {
+		return talentRecord;
+	}
+
+	public void setTalentRecord(TalentRecord talentRecord) {
+		this.talentRecord = talentRecord;
+	}
+	
+	
 }

@@ -10,20 +10,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.oc.dao.BaseDaoI;
-import com.oc.dto.Resume;
 import com.oc.dto.Talent;
-import com.oc.model.Tresume;
+import com.oc.dto.TalentRecord;
+import com.oc.model.TTalentRecord;
 import com.oc.model.Ttalent;
 import com.oc.service.TalentServiceI;
 import com.oc.utils.system.CodeGenerator;
 import com.oc.utils.system.DataGrid;
-import com.oc.utils.system.Encrypt;
 import com.oc.utils.system.ResourceUtil;
 import com.oc.utils.system.SessionInfo;
 import com.oc.utils.system.SysConstants;
 @Service("talentService")
 public class TalentServiceImpl implements TalentServiceI {
 	private BaseDaoI<Ttalent> talentDao;//rencai基本信息dao
+	private BaseDaoI<TTalentRecord> recordDao;//跟进记录dao
 	
 	public BaseDaoI<Ttalent> getTalentDao() {
 		return talentDao;
@@ -32,7 +32,15 @@ public class TalentServiceImpl implements TalentServiceI {
 	public void setTalentDao(BaseDaoI<Ttalent> talentDao) {
 		this.talentDao = talentDao;
 	}
+	
 
+	public BaseDaoI<TTalentRecord> getRecordDao() {
+		return recordDao;
+	}
+	@Autowired
+	public void setRecordDao(BaseDaoI<TTalentRecord> recordDao) {
+		this.recordDao = recordDao;
+	}
 	@Override
 	public DataGrid datagrid(Talent talent) {
 		DataGrid d = new DataGrid();
@@ -102,6 +110,26 @@ public class TalentServiceImpl implements TalentServiceI {
 		}
 	}
 
+	
+    //登录用户给人才添加跟进记录	
+	public boolean addRecord(TalentRecord record){
+		if(record.getRecordId()==null){//表示新增跟进记录
+			TTalentRecord  dbrecord = new TTalentRecord();
+			BeanUtils.copyProperties(record, dbrecord);//参数说明，第一个参数为源  第二个参数为目标
+			dbrecord.setTraceDate(new Date());//添加跟进记录时间
+			SessionInfo sessionInfo = (SessionInfo) ServletActionContext.getRequest().getSession().getAttribute(ResourceUtil.getSessionInfoName());
+			dbrecord.setTraceUserId(sessionInfo.getUserId());//跟进用户id
+			dbrecord.setTraceUserName(sessionInfo.getLoginName());//跟进用户名称
+			recordDao.save(dbrecord);//新增内容
+			if(record.getTalentId()!=null){
+				Ttalent tmp = talentDao.get(Ttalent.class, record.getTalentId());
+				tmp.setTraceRecord(record.getRecord());
+				talentDao.saveOrUpdate(tmp);//保存跟进记录
+			}
+			return true;
+		}
+		return false;
+	}
 	
 	//将从数据库中获取的数据进行模型转换
 		private List<Talent> changerModel(List<Ttalent> talentList) {

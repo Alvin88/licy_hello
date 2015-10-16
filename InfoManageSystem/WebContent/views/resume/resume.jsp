@@ -78,6 +78,12 @@
 						handler : function() {
 							remove();
 						}
+					},'-',{
+						text:'跟进人才',
+						iconCls:'icon-add',
+						handler:function(){
+							addRecord();
+						}
 					}, '-', {
 						text : '取消选中',
 						iconCls : 'icon-redo',
@@ -117,6 +123,51 @@
 			}
 		});
 	}
+	//添加跟进记录
+	function addRecord(){
+		var rows = dg.datagrid('getChecked');
+		if (rows.length ==1) {
+			var d=$('<div/>').dialog({
+				title : '跟进记录',
+				href : '${pageContext.request.contextPath}/views/resume/recordAdd.jsp',
+				width : 600,
+				height : 200,
+				modal : true,
+				buttons : [ {
+					text : '跟进',
+					handler : function() {
+						$('#resume_record_addForm').form('submit',{
+							 url:'${pageContext.request.contextPath}/talentAction!addRecord.action',
+						            success:function(r){
+						            	obj=$.parseJSON(r);
+						                 if(obj.success){
+						                 d.dialog('close');
+						                 dg.datagrid('load');
+										 dg.datagrid('unselectAll');
+						            	 $.messager.show({
+						            		 title:'提示',
+						            		 msg:obj.msg
+						            	 });
+						                 }else{
+						                	 $.messager.alert('提示', obj.msg);
+						                 }
+								    }
+						});
+					}
+				} ],
+				onClose : function() {
+					$(this).dialog('destroy');
+				},
+				onLoad : function() {
+					$('#record_talent_id').val(rows[0].id);
+				}
+			});
+			
+		}else{
+			$.messager.alert('提示', '请勾选一条要跟进的人才数据');
+		}
+	}
+	
 	function remove() {
 		var rows = dg.datagrid('getChecked');
 		var ids = [];
@@ -168,7 +219,6 @@
 					var resumeId = rows[0].id;//就是有值表示是修改，否则表示新增
 					//设置五个form表单的值
 					//首先设置form_resume_create表单
-					console.dir(rows[0]);
 					$('#edit_form_resume_create').form('clear');
 	                $('#edit_form_resume_create').form('load',{
 	                	"talent.id":rows[0].id,

@@ -136,7 +136,7 @@
 		if (rows.length == 1) {
 			var d=$('<div/>').dialog({
 				title : '编辑用户',
-				href : '${pageContext.request.contextPath}/admin/yhglEdit.jsp',
+				href : '${pageContext.request.contextPath}/views/admin/yhglEdit.jsp',
 				width : 600,
 				height : 200,
 				modal : true,
